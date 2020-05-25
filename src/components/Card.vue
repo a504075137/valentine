@@ -1,0 +1,87 @@
+<template>
+  <div class="wrapper">
+    <div class="header">
+      <div class="pic"></div>
+      <div class="content">
+        <div class="name">{{giftInfo.giftName}}</div>
+        <div class="desc">这是一段描述文案这是一段描述文案这是一段描述文案</div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="time">{{giftInfo.createAt}}</div>
+      <div class="btn" @click="getGift"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+    props:['giftInfo'],
+    data(){
+        return {
+
+        };
+    },
+    methods:{
+        getGift(){
+            // this.$dialog.show("getGift");
+            this.$emit('getGift',this.giftInfo);
+        }
+    },
+    created(){
+    }
+};
+</script>
+
+<style lang="less">
+.wrapper {
+  .wh(6.65rem, 2.93rem);
+  .bg-cover("card.png");
+  > .header {
+    .wh(100%, 1.65rem);
+    background-color: rgba(42, 142, 255, 0.3);
+    .flex(space-around, center);
+    > .pic {
+      .wh(1.24rem);
+      background-color: #ffffff;
+      opacity: 0.73;
+      border-radius: 50%;
+      //   margin-left: 0.4rem;
+    }
+    > .content {
+      .wh(4.01rem, 1.08rem);
+      .flex-column(space-start, flex-start);
+      > .name {
+        font-size: 0.3rem;
+        font-weight: bold;
+        font-stretch: normal;
+        letter-spacing: 0.02rem;
+        color: #ffffff;
+      }
+      > .desc {
+        margin-top: 0.2rem;
+        font-size: 0.24rem;
+        font-weight: normal;
+        font-stretch: normal;
+        letter-spacing: 1px;
+        color: #79a7e6;
+      }
+    }
+  }
+  > .footer {
+    .wh(100%, 1.19rem);
+    .flex(space-around, center);
+    > .time {
+      font-size: 0.22rem;
+      font-weight: bold;
+      font-stretch: normal;
+      letter-spacing: 2px;
+      color: #0099fa;
+    }
+    > .btn {
+      .wh(2.72rem, 1.06rem);
+      .bg-contain("gift_btn.png");
+    }
+  }
+}
+</style>

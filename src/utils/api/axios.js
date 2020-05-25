@@ -12,33 +12,34 @@ const axios = Axios.create({
     timeout: config.timeout
 });
 
-axios.interceptors.request.use(res=> {
+axios.interceptors.request.use(res => {
     return res;
-}, error=> {
+}, error => {
     return Promise.reject(error);
 });
 
-axios.interceptors.response.use(response=> {
+axios.interceptors.response.use(response => {
     let result = '';
     try {
         const {
             data: {
                 payload,
                 code,
-                msg
+                msg,
+                data
             }
         } = response;
         if (code != '0') {
-            payload.msg = msg;
-            payload.code = code;
+            data.msg = msg;
+            data.code = code;
         }
-        result = payload;
-    } catch(e) {
+        result = data;
+    } catch (e) {
         result = response.data;
     }
     const key = response.config.url.replace(config.host, '').split('?')[0];
     return Promise.resolve(preDeal(key, result));
-}, error=> {
+}, error => {
     console.log(error);
     return Promise.reject(error.response && error.response.data);
 });
@@ -49,7 +50,7 @@ axios.interceptors.response.use(response=> {
  * @param {*} params 
  * @param {*} headers 
  */
-const get = (url = '', params = {}, headers = {})=> {
+const get = (url = '', params = {}, headers = {}) => {
     return axios.get(url, {
         params,
         headers
@@ -62,7 +63,7 @@ const get = (url = '', params = {}, headers = {})=> {
  * @param {*} params 
  * @param {*} headers 
  */
-const post = (url = '', params = {}, headers = {})=> {
+const post = (url = '', params = {}, headers = {}) => {
     return axios.post(url, params, {
         headers
     });
@@ -74,7 +75,8 @@ const post = (url = '', params = {}, headers = {})=> {
  * @param {*} params 
  * @param {*} headers 
  */
-const encryptGet = (url = '', params = {}, headers = {})=> {
+const encryptGet = (url = '', params = {}, headers = {}) => {
+
     return get(url, params, {
         ...headers,
         ...encrypt(params)
@@ -87,7 +89,7 @@ const encryptGet = (url = '', params = {}, headers = {})=> {
  * @param {*} params 
  * @param {*} headers 
  */
-const encryptPost = (url = '', params = {}, headers = {})=> {
+const encryptPost = (url = '', params = {}, headers = {}) => {
     return post(url, params, {
         ...headers,
         ...encrypt(params)
@@ -98,25 +100,25 @@ const encryptPost = (url = '', params = {}, headers = {})=> {
  * 带有jwt权限的请求
  */
 const auth = {
-    get: (url = '', params = {}, headers = {})=> {
+    get: (url = '', params = {}, headers = {}) => {
         return get(url, params, {
             ...headers,
             ...config.authHeader
         });
     },
-    post: (url = '', params = {}, headers = {})=> {
+    post: (url = '', params = {}, headers = {}) => {
         return post(url, params, {
             ...headers,
             ...config.authHeader
         });
     },
-    encryptGet: (url = '', params = {}, headers = {})=> {
+    encryptGet: (url = '', params = {}, headers = {}) => {
         return encryptGet(url, params, {
             ...headers,
             ...config.authHeader
         });
     },
-    encryptPost: (url = '', params = {}, headers = {})=> {
+    encryptPost: (url = '', params = {}, headers = {}) => {
         return encryptPost(url, params, {
             ...headers,
             ...config.authHeader

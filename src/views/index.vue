@@ -1,12 +1,12 @@
 <template>
-    <div class="page-loading">
-        <div class='progress-box'>
-            <div class="progress-text">{{numProgress}}</div>
-            <div class="progress-bg">
-                <div class="progress" :style='{width: `${loadProgress}%`}'></div>
-            </div>
-        </div>
+  <div class="page-loading">
+    <div class="progress-box">
+      <div class="progress-text">{{numProgress}}</div>
+      <div class="progress-bg">
+        <div class="progress" :style="{width: `${loadProgress}%`}"></div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -74,7 +74,8 @@ export default {
         },
         getApi() {
             const list = [
-                this.$wxsdk.getWxConfig()
+                this.$wxsdk.getWxConfig(),
+                this.$api.boot({activityId:1}),
             ];
             return list;
         },
@@ -121,13 +122,21 @@ export default {
         loadFinish() {
             this.$bus.ready = true;
             this.$bus.showMusicIcon = true;
+            const jwt = this.$storage.load("jwt");
+            // if (!jwt) {
+            //     this.$router.replace('login');
+            // } else {
+            //     this.$api.injectJwt(jwt);
+            //     this.$router.replace('home');
+            // }
             this.$router.replace('home');
+           
         },
         playAudio(path, config) {
             path = path.replace(/(\.\/)/, '').replace(/(\/)|(\.)/g, '_');
             // path = path.replace(/(\.\/)/, '').split('.')[0];
             if (config[path]) {
-                this.$audio.play(path, config[path]);
+                // this.$audio.play(path, config[path]);
             }
         }
     },
@@ -136,27 +145,27 @@ export default {
 
 <style lang="less">
 .page-loading {
-    .page(cornflowerblue);
-    > .progress-box {
-        width: 60%;
-        .center();
-        .flex-column();
-        > .progress-text {
-            font-size: .3rem;
-            margin-bottom: 10px;
-        }
-        > .progress-bg {
-            .wh(100%, 10px);
-            background-color: white;
-            border-radius: 10px;
-            > .progress {
-                width: 0%;
-                height: 10px;
-                background-color: aquamarine;
-                transition: width .3s;
-                border-radius: 10px;
-            }
-        }
+  .page(cornflowerblue);
+  > .progress-box {
+    width: 60%;
+    .center();
+    .flex-column();
+    > .progress-text {
+      font-size: 0.3rem;
+      margin-bottom: 10px;
     }
+    > .progress-bg {
+      .wh(100%, 10px);
+      background-color: white;
+      border-radius: 10px;
+      > .progress {
+        width: 0%;
+        height: 10px;
+        background-color: aquamarine;
+        transition: width 0.3s;
+        border-radius: 10px;
+      }
+    }
+  }
 }
 </style>

@@ -4,10 +4,10 @@ import {
 } from '../jwt';
 
 let pro = '//custom.k8s.acgxpro.com';
-let dev = 'http://192.168.0.110:3000';
+let dev = '//120.77.96.19:3010';
 
-// pro = dev;
-dev = pro;
+pro = dev;
+// dev = pro;
 const host = process.env.NODE_ENV === 'production' ? pro : dev;
 
 const defaultHeaders = {

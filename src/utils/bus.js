@@ -24,7 +24,9 @@ const bus = new Vue({
                 openid: '',
                 unionid: '',
                 wxappid: ''
-            }
+            },
+            signInfo: {},
+            refresh: true
         };
     },
     created() {
@@ -34,7 +36,7 @@ const bus = new Vue({
                 'mozHidden' in document ? 'mozHidden' : null;
         if (hiddenProperty) {
             const visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
-            const onVisibilityChange = (e)=> {
+            const onVisibilityChange = (e) => {
                 if (document[hiddenProperty]) {
                     console.log('hidden');
                     this.$audio.visibilityChangeMute(true);
@@ -48,10 +50,10 @@ const bus = new Vue({
         }
     },
     computed: {
-        
+
     },
     methods: {
-        
+
     }
 });
 

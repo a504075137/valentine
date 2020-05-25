@@ -1,5 +1,12 @@
+import Vue from 'vue';
 const preDealList = {
-    '/server/time': (res)=> {
+    '/server/time': (res) => {
+        return res;
+    },
+    '/mark/boot': (res) => {
+        console.log('info', res);
+        Vue.$bus.signInfo = res;
+        Vue.$bus.refresh = !Vue.$bus.refresh;
         return res;
     }
 };

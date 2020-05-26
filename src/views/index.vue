@@ -84,7 +84,7 @@ export default {
                 let jwt = this.$storage.load("jwt");
                 if(jwt){
                     await this.$api.injectJwt(jwt);
-                    await this.$api.boot({activityId:1});
+                    await this.$api.boot({activityId:this.$bus.activityId});
                 }
                 resolve();
        
@@ -136,11 +136,14 @@ export default {
             this.$bus.showMusicIcon = true;
             let jwt = this.$storage.load("jwt");
             if (!jwt) {
-                this.$router.replace('login');
+                this.$bus.isLogin = false;
+                // this.$router.replace('login');
             } else {
+                this.$bus.isLogin = true;
                 this.$api.injectJwt(jwt);
-                this.$router.replace('home');
+               
             }
+            this.$router.replace('home');
            
         },
         playAudio(path, config) {

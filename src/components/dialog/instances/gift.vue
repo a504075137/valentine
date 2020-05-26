@@ -10,10 +10,13 @@
       <div class="content">
         <!-- <div class="sign-succes" v-if="type === 'sign-success'"></div> -->
         <div class="icon" :style="{backgroundImage:`url(${require(`@imgs/icon_${type}.png`)})`}"></div>
-        <div class="text" v-if="type!=='get-gift'">
+        <div
+          :class="['text',{'success':$bus.isLogin && type =='sign-success'}]"
+          v-if="type!=='get-gift'"
+        >
           {{textList[type].p1}}
           <br />
-          {{textList[type].p2}}
+          <template v-if="(!$bus.isLogin || type !=='sign-success')">{{textList[type].p2}}</template>
         </div>
         <div :class="['text' , {'hasGain':hasGain || cantGain}]" v-else-if="giftInfo.length === 1">
           <template v-if="cantGain">奖品是{{giftInfo[0].giftName}}</template>
@@ -24,7 +27,11 @@
             </template>
           </template>
         </div>
-        <div class="btn" v-if="!hasGain && !cantGain" @click="recieve">{{btnText[type]}}</div>
+        <div
+          class="btn"
+          v-if="(!hasGain && !cantGain) && (!$bus.isLogin || type !=='sign-success')"
+          @click="recieve"
+        >{{btnText[type]}}</div>
       </div>
       <div class="close-btn" @click="$emit('close')"></div>
     </div>
@@ -83,7 +90,7 @@ export default {
                         this.$emit('close');
                         return;
                     }
-                    if(result.code === '1013'){
+                    if(result.code === '1011'){
                         this.$toast('签到过了');
                         this.$loading.hide();
                         this.$emit('close');
@@ -95,15 +102,23 @@ export default {
                         return;
                     }
                     if(result.sendGiftList.length>0){
-                        const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'sign-success';
-                        this.$dialog.show("gift",{vBind:{type}});
+                        const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
+                        await this.$api.boot({activityId:this.$bus.activityId});
+                        setTimeout(()=>{
+                            this.$dialog.show("gift",{vBind:{type,hasGain:false,giftInfo:result.sendGiftList}});
+                        },1000);
+                        this.$loading.hide();
+                        this.$emit('close');
+                        return;
                     }
-                    await this.$api.boot({activityId:1});
-                    this.$emit('refresh');
+                    await this.$api.boot({activityId:this.$bus.activityId});
                     this.$loading.hide();
                     this.$emit('close');
-                    this.$toast({message:"补签成功"});
-
+                    // this.$toast({message:"补签成功"});
+                    setTimeout(()=>{
+                        this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                    },1000);
+                  
 
                 }else{
                     this.$toast({message:'没有补签次数'});
@@ -113,8 +128,18 @@ export default {
                     console.log("领过了");
                 }else{
                     console.log(this.giftInfo[0]);
+                    this.$emit('close');
+                    this.$router.replace('rule');
                 }
                 
+            }else if(this.type === 'taobao'){
+                this.$emit('close');
+                setTimeout(()=>{
+                    this.$dialog.show("gift",{vBind:{type:'taobao'}});
+                },1000);
+            }else if(this.type === 'sign-success'){
+                this.$emit('close');
+                this.$router.replace("login");
             }
         }
     }
@@ -140,6 +165,9 @@ export default {
         font-stretch: normal;
         color: #eaf5ff;
         &.hasGain {
+          margin-bottom: 1.5rem;
+        }
+        &.success {
           margin-bottom: 1.5rem;
         }
       }

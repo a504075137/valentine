@@ -26,7 +26,10 @@ const bus = new Vue({
                 wxappid: ''
             },
             signInfo: {},
-            refresh: true
+            refresh: true,
+            activityId: 1,
+            isLogin: false,
+            ruleIndex: 0
         };
     },
     created() {

@@ -76,7 +76,8 @@ export default {
             this.month=curdate.getMonth() +1;
             this.day=curdate.getDate();
             this.curDate = `${this.year}-${this.month}-${this.day}`;
-            startTime =dayjs(this.$bus.signInfo.config.startTime);
+            if(!this.$bus.isLogin) return;
+            startTime =dayjs(this.$bus.signInfo.config.startTime.split(" ")[0]);
             endTime =dayjs(this.$bus.signInfo.config.endTime);
         },
         handleChoose(day){
@@ -204,8 +205,9 @@ export default {
         },
         noMarkDays(){
             return (time)=>{
+                if(!this.$bus.isLogin) return false;
                 const date = dayjs(time);
-                return startTime.isBefore(date) && endTime.isAfter(date);
+                return (startTime.isBefore(date) || startTime.isSame(date));
             };
         },
         formMyDate(){
@@ -238,14 +240,17 @@ export default {
         },
         isBeforeNow(){
             return (time)=>{
-                return this.$func.isAfter(time);
+                return dayjs(time).isBefore(dayjs());
             };
         }
 
     },
     created(){
         this.getInitData();
-        this.initStatus();
+        if(this.$bus.isLogin){
+            this.initStatus();
+
+        }
     },
     watch:{
         "$bus.refresh"(val){

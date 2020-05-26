@@ -30,6 +30,10 @@
         <input v-input type="text" class="name" v-model="name" placeholder="请输入姓名" />
         <input v-input type="text" class="phone" v-model="phone" placeholder="请输入电话" />
         <input v-input type="text" class="email" v-model="address" placeholder="请输入邮箱" />
+        <div class="desc">
+          请填写您的领奖信息
+          <br />我们将在活动结束后尽快安排发奖
+        </div>
       </div>
     </div>
     <footer>
@@ -53,7 +57,7 @@ export default {
     },
     data () {
         return {
-            index:0,
+            index:1,
             giftList:[],
             name:'',
             phone:'',
@@ -82,10 +86,13 @@ export default {
             if(params.giftType === 'entity'){
                 this.index = 3;
                 this.gift = params;
-                const {name,phone,address} = JSON.parse(params.addressForm);
-                this.name = name;
-                this.phone = phone;
-                this.address = address;
+                if(params.addressForm){
+                    const {name,phone,address} = JSON.parse(params.addressForm);
+                    this.name = name;
+                    this.phone = phone;
+                    this.address = address;
+                }
+               
             }else{
                 this.$dialog.show("gift",{vBind:{type:'taobao'}});
             }
@@ -161,10 +168,12 @@ export default {
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
     > .bg {
-      .center-row();
-      top: 1.5rem;
+      // .center-row();
+      // top: 1.5rem;
+      margin: 1rem auto 0;
       .wh(6.53rem, 6.83rem);
-      background-color: rgba(19, 36, 83, 0.78);
+      // background-color: rgba(19, 36, 83, 0.78);
+      .bg-cover("gift_bg.png");
       .flex-column(flex-start);
       > input {
         .wh(5.59rem, 0.85rem);
@@ -178,6 +187,15 @@ export default {
         &::placeholder {
           color: #999999;
         }
+      }
+      > .desc {
+        margin-top: 0.8rem;
+        font-size: 0.24rem;
+        font-weight: normal;
+        font-stretch: normal;
+        letter-spacing: 1px;
+        color: #52638f;
+        text-align: center;
       }
     }
     > .title {

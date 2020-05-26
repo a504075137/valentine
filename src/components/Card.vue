@@ -37,6 +37,7 @@ export default {
 .wrapper {
   .wh(6.65rem, 2.93rem);
   .bg-cover("card.png");
+  margin: 0.5rem auto;
   > .header {
     .wh(100%, 1.65rem);
     background-color: rgba(42, 142, 255, 0.3);

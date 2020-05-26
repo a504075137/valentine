@@ -3,9 +3,6 @@
     <div class="banner">
       <swiper :options="swiperOption" class="swiper">
         <swiper-slide>
-          <div class="banner-img"></div>
-        </swiper-slide>
-        <swiper-slide>
           <div
             class="banner-img"
             :style="{backgroundImage:`url(${require(`@imgs/banner_2.png`)})`}"

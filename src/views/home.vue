@@ -50,6 +50,7 @@ export default {
         //     });
         // },
         init(){
+            if(!this.$bus.isLogin) return;
             this.signDay = this.$bus.signInfo.markList.length;
             this.continueDay = this.$bus.signInfo.markList.length >0 ? this.$bus.signInfo.markList[0].continueDays:0;
             this.getGiftDate();
@@ -65,6 +66,10 @@ export default {
             this.giftDays = giftDays;
         },
         async mark(){
+            if(!this.$bus.isLogin){
+                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                return;
+            }
             this.$loading.show();
             const markResult = await this.$api.mark({activityId:this.$bus.signInfo.config.id});
             console.log("mark",markResult);
@@ -73,9 +78,15 @@ export default {
                 this.$loading.hide();
                 return;
             }
-            await this.$api.boot({activityId:1});
+            await this.$api.boot({activityId:this.$bus.activityId});
             this.$loading.hide();
-            this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+            if(markResult.sendGiftList.length>0){
+                const type = markResult.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
+                this.$dialog.show("gift",{vBind:{type,hasGain:false,giftInfo:markResult.sendGiftList}});
+            }else{
+                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+
+            }
         },
     },
     watch:{

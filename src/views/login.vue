@@ -69,6 +69,8 @@ export default {
                 try {
                     this.$loading.show();
                     const result = await this.$api.login(obj);
+                    this.$bus.isLogin = true;
+                    await this.$api.boot({activityId:this.$bus.activityId});
                     this.$toast('登陆成功');
                     this.$loading.hide();
                     this.$router.replace("home");
@@ -160,7 +162,8 @@ export default {
                 case 0:
                     this.injectJwt(result.jwt);
                     this.$storage.save('jwt', result.jwt);
-                    await this.$api.boot({activityId:1});
+                    this.$bus.isLogin = true;
+                    await this.$api.boot({activityId:this.$bus.activityId});
                     this.$toast('注册成功');
                     this.$router.replace("home");
                     break;

@@ -103,6 +103,7 @@ export default {
 
                 }
             }else{
+                console.log(1111,this.isBeforeNow(chooseDay) );
                 this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
             }
         },
@@ -207,7 +208,7 @@ export default {
             return (time)=>{
                 if(!this.$bus.isLogin) return false;
                 const date = dayjs(time);
-                return (startTime.isBefore(date) || startTime.isSame(date));
+                return (startTime.isBefore(date) || startTime.isSame(date)) && (endTime.isAfter(date));
             };
         },
         formMyDate(){
@@ -240,7 +241,7 @@ export default {
         },
         isBeforeNow(){
             return (time)=>{
-                return dayjs(time).isBefore(dayjs());
+                return (dayjs(time).isBefore(dayjs()) && dayjs(time).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD'));
             };
         }
 
@@ -376,7 +377,7 @@ export default {
               border-radius: 0;
             }
           }
-          > .activity-day:not(.has-day) {
+          > .activity-day:not(.has-day .now-day) {
             > .date-num {
               .p-r();
               > span {

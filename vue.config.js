@@ -25,7 +25,7 @@ const genPlugins = () => {
 };
 
 module.exports = {
-    publicPath: (isProd && projectConfig.outputToSvn) ? projectConfig.cdnUrl : '/',
+    publicPath: (isProd && projectConfig.outputToSvn) ? projectConfig.cdnUrl : './',
     outputDir: projectConfig.outputToSvn ? projectConfig.svnDir[gitUserName] : 'dist/',
     assetsDir: 'static',
 

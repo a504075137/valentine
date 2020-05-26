@@ -15,20 +15,20 @@ class Api {
         setServerTime(data.server_time);
     }
     injectJwt(jwt) {
-        config.authHeader.Authorization = `Bearer ${jwt}`;
+        config.authHeader.Authorization = `Bear ${jwt}`;
     }
     async login(params) {
         return new Promise(async (resolve, reject) => {
-            let res = await post('/login', params);
-            // res.jwt = 'eyJhbGciOiJIUzUxMiJ9.eyJkYXRhIjp7InBob25lIjoiMTgxMjIxODA5NjQifSwiZXhwIjoxNTkyNzU2MDY0LCJzdWIiOiIifQ.Z7sSZC0Yw9o0xc_V7QNQWzbDQFhsjyoPWEPUD46BcaTmtydaIiNalTYIau8OO5LTxCdvy2wujMzAz_gX4g9nTw';
+            let res = await post('/login/feizhi/login', { country_code: "86", isuid: "2", ...params });
+            console.log(res);
             try {
                 if (res.jwt) {
                     this.injectJwt(res.jwt);
                     Vue.$storage.save('jwt', res.jwt);
-                    resolve();
+                    resolve(res);
                 } else {
-                    Vue.$toast('登录失败', 'error');
-                    reject('登录失败');
+                    // Vue.$toast('登录失败', 'error');
+                    reject(res);
                 }
 
             } catch (e) {
@@ -53,6 +53,15 @@ class Api {
     sendForm(params) {
         return auth.post('/mark/form', params);
     }
+    sendCode(params) {
+        return post('/login/feizhi/code', { country_code: 86, ...params });
+    }
+    register(params) {
+        return post('/login/feizhi/register', params);
+    }
+    // login(params) {
+    //     return auth.post('/login/feizhi/login', params);
+    // }
 }
 
 

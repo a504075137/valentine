@@ -1,9 +1,9 @@
 <template>
   <div class="calendar">
     <div class="date-header">
-      <!-- <div class="prev-month" @click="handlePrev"></div> -->
+      <div class="prev-month" :style="{opacity:hasPrev?1:0}" @click="handlePrev"></div>
       <div class="show-date">{{`${year}年${month >=10?month:'0'+month}月`}}</div>
-      <!-- <div class="next-month" @click="handleNext"></div> -->
+      <div class="next-month" :style="{opacity:hasNext?1:0}" @click="handleNext"></div>
     </div>
     <div class="date-content">
       <div class="week-header">
@@ -25,15 +25,15 @@
               @click="handleChoose(item - beginDay)"
               :class="{
               'now-day':`${year}-${month}-${item-beginDay}` === curDate,
-              'active-day':`${year}-${month}-${item-beginDay}` === `${year}-${month}-${day}`,
-              'has-day':hasMarkDay(`${year}-${month >=10?month:'0'+month}-${(item-beginDay) >=10?item-beginDay:'0'+(item-beginDay)}`),
+              'has-day':hasMarkDay(formMyDate(item)),
+              'activity-day':noMarkDays(formMyDate(item)) && isBeforeNow(formMyDate(item)),
               'gift-day':giftDate(`${year}-${month}-${item-beginDay}`).flag,
-            
-              'has-gift':hasGiftDate(`${year}-${month >=10?month:'0'+month}-${(item-beginDay) >=10?item-beginDay:'0'+(item-beginDay)}`).flag
+              'has-gift':hasGiftDate(formMyDate(item)).flag
           }"
             >
               <div class="date-num">
-                {{item - beginDay}}
+                <span>{{item - beginDay}}</span>
+
                 <div
                   :class="['gift-icon', {'shake':giftDate(`${year}-${month}-${item-beginDay}`).shake}]"
                 ></div>
@@ -52,6 +52,9 @@
 // let giftDay; // 可获得奖品的日子
 // let userGiftList; // 用户已获得奖品列表
 // let signDay; // 用户签到过的列表
+import dayjs from 'dayjs';
+let startTime;
+let endTime;
 export default {
     props:['giftDays'],
     data(){
@@ -73,9 +76,12 @@ export default {
             this.month=curdate.getMonth() +1;
             this.day=curdate.getDate();
             this.curDate = `${this.year}-${this.month}-${this.day}`;
+            startTime =dayjs(this.$bus.signInfo.config.startTime);
+            endTime =dayjs(this.$bus.signInfo.config.endTime);
         },
         handleChoose(day){
-            const markFlag = this.hasMarkDay(`${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`);
+            const chooseDay = `${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`;
+            const markFlag = this.hasMarkDay(chooseDay);
             if(markFlag){
                 const hasGift = this.hasGiftDate(`${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`);
                 if(hasGift.flag){
@@ -86,31 +92,34 @@ export default {
                 }
                 return;
             }
-            if(this.day>day){
-                this.$dialog.show("gift",{vBind:{type:'remark',date:`${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`}});
-
-            }else{
-                const hasGift = this.giftDate(`${this.year}-${this.month}-${day}`);
+            const hasGift = this.giftDate(`${this.year}-${this.month}-${day}`);
+            if(!this.noMarkDays(chooseDay) || !this.isBeforeNow(chooseDay)){
                 if(hasGift.flag){
                     this.$dialog.show("gift",{vBind:{type:'get-gift',hasGain:false,cantGain:true,giftInfo:hasGift.itemInfo}});
                     console.log("展示奖品",hasGift.itemInfo);
                 }else{
-                    // this.$toast({message:'该日已签到'});
+                    return;
 
                 }
+            }else{
+                this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
             }
-            // this.day = day;
         },
         handlePrev(){
+            if(!this.hasPrev){
+                return;
+            }
             if(this.month === 1){
                 this.month = 12;
                 this.year --;
             }else{
                 this.month -=1;
-
             }
         },
         handleNext(){
+            if(!this.hasNext){
+                return;
+            }
             if(this.month === 12){
                 this.month = 1;
                 this.year ++;
@@ -193,6 +202,45 @@ export default {
                 return {flag,itemInfo};
             };
         },
+        noMarkDays(){
+            return (time)=>{
+                const date = dayjs(time);
+                return startTime.isBefore(date) && endTime.isAfter(date);
+            };
+        },
+        formMyDate(){
+            return (item)=>{
+                return `${this.year}-${this.month >=10?this.month:'0'+this.month}-${(item-this.beginDay) >=10?item-this.beginDay:'0'+(item-this.beginDay)}`;
+            };
+            
+        },
+        hasPrev(){ // 判断前一个月是否有活动
+            let year=this.year , month=this.month;
+            if(this.month === 1){
+                month = 12;
+                year = this.year -1;
+            }else{
+                month =this.month - 1;
+            }
+            const day = new Date(year,month,0).getDate();
+            return this.noMarkDays(`${year}-${month}-${day}`);
+        },
+        hasNext(){// 判断下一个月是否有活动
+            let year=this.year , month=this.month;
+            if(month === 12){
+                month = 1;
+                year ++;
+            }else{
+                month +=1;
+            }
+            const day = 1;
+            return this.noMarkDays(`${year}-${month}-${day}`);
+        },
+        isBeforeNow(){
+            return (time)=>{
+                return this.$func.isAfter(time);
+            };
+        }
 
     },
     created(){
@@ -216,29 +264,29 @@ export default {
   font-size: 0.35rem;
 
   > .date-header {
-    width: 100%;
+    width: 80vw;
     .flex(space-between, center);
+    margin: 0 auto 0.4rem;
     > .prev-month,
     > .next-month {
-      border: 15px solid transparent;
-      width: 0;
-      height: 0;
+      .wh(0.48rem);
     }
     > .prev-month {
-      border-right-color: #007fff;
+      .bg-contain("left.png");
     }
 
     > .next-month {
-      border-left-color: #007fff;
+      .bg-contain("right.png");
     }
     > .show-date {
-      flex: 1;
+      .wh(4.68rem, 0.44rem);
+      .bg-cover("date_bg.png");
       text-align: center;
       font-size: 0.39rem;
       font-weight: bold;
       font-stretch: normal;
-      line-height: 44px;
-      letter-spacing: 4px;
+      line-height: 0.44rem;
+      letter-spacing: 0.04rem;
       color: #ffffff;
     }
   }
@@ -301,6 +349,9 @@ export default {
           > .has-gift {
             > .date-num {
               .p-r();
+              > span {
+                opacity: 0;
+              }
               > .gift-icon {
                 .p-a();
                 top: 50%;
@@ -319,6 +370,24 @@ export default {
             > .date-num {
               border-radius: 0;
             }
+          }
+          > .activity-day:not(.has-day) {
+            > .date-num {
+              .p-r();
+              > span {
+                opacity: 0;
+              }
+              > .gift-icon {
+                .p-a();
+                top: 50%;
+                left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+                .wh(0.37rem);
+                .bg-contain("need_remark.png");
+              }
+              // display: none;
+            }
+            // }
           }
         }
       }

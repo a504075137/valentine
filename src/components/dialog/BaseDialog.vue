@@ -1,39 +1,38 @@
 <template>
-    <section :class="'BaseDialog'">
-        <transition name="fade" appear>
-            <section
-                v-show="show"
-                class="BaseDialog__mask"
-                :class="[showMask || 'opacity', orientation]"
-            />
-        </transition>
-        <transition :name="dialogTransition" appear>
-            <section
-                v-show="show"
-                class="BaseDialog__wrapper_box"
-                :class="dialogType"
-                :style="{
+  <section :class="'BaseDialog'">
+    <transition name="fade" appear>
+      <section
+        v-show="show"
+        class="BaseDialog__mask"
+        :class="[showMask || 'opacity', orientation]"
+      />
+    </transition>
+    <transition :name="dialogTransition" appear>
+      <section
+        v-show="show"
+        class="BaseDialog__wrapper_box"
+        :class="dialogType"
+        :style="{
                     'pointer-events': showOrHideAnimationOver ? 'auto' : 'none',
                     'animation-duration':`${animationDuration/1000}s`
-                }">
-                <section
-                    v-show="show"
-                    class="BaseDialog__inner_mask"
-                    @click="maskClose && $emit('close')"
-                />
-                <section class="BaseDialog__wrapper">
-                    <div class="closeBtn selfConfigClose"
-                        :class="closeClass"
-                        v-if="showClose"
-                        @click="close"
-                        :style="{
+                }"
+      >
+        <section v-show="show" class="BaseDialog__inner_mask" @click="maskClose && $emit('close')" />
+        <section class="BaseDialog__wrapper">
+          <div
+            class="closeBtn selfConfigClose"
+            :class="closeClass"
+            v-if="showClose"
+            @click="close"
+            :style="{
                             backgroundImage: `url(${$bus.dialogCloseBtn})`
-                        }" />
-                    <slot />
-                </section>
-            </section>
-        </transition>
-    </section>
+                        }"
+          />
+          <slot />
+        </section>
+      </section>
+    </transition>
+  </section>
 </template>
 
 <script>
@@ -107,41 +106,41 @@ export default {
 
 <style lang="less">
 .BaseDialog {
-    .p-f();
+  .p-f();
+  .wh(100vw, 100vh);
+  top: 0;
+  left: 0;
+  color: white;
+  z-index: 9999;
+  > .BaseDialog__wrapper_box {
+    .p-a();
+    .flex();
     .wh(100vw, 100vh);
+    > .BaseDialog__inner_mask {
+      .p-a();
+      .wh(100%);
+      top: 0;
+      left: 0;
+    }
+    > .BaseDialog__wrapper {
+      .p-r();
+      z-index: 10;
+      > .closeBtn {
+        .p-a();
+        z-index: 100;
+        transition: opacity 0.5s;
+      }
+    }
+  }
+  > .BaseDialog__mask {
+    .p-a();
     top: 0;
     left: 0;
-    color: white;
-    z-index: 999999;
-    > .BaseDialog__wrapper_box {
-        .p-a();
-        .flex();
-        .wh(100vw, 100vh);
-        > .BaseDialog__inner_mask {
-            .p-a();
-            .wh(100%);
-            top: 0;
-            left: 0;
-        }
-        > .BaseDialog__wrapper {
-            .p-r();
-            z-index: 10;
-            > .closeBtn {
-                .p-a();
-                z-index: 100;
-                transition: opacity 0.5s;
-            }
-        }
+    .wh(100%);
+    background-color: rgba(0, 0, 0, 0.85);
+    &.opacity {
+      background-color: transparent;
     }
-    > .BaseDialog__mask {
-        .p-a();
-        top: 0;
-        left: 0;
-        .wh(100%);
-        background-color: rgba(0, 0, 0, 0.85);
-        &.opacity {
-            background-color: transparent;
-        }
-    }
+  }
 }
 </style>

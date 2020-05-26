@@ -74,10 +74,22 @@ export default {
         },
         getApi() {
             const list = [
-                this.$wxsdk.getWxConfig(),
-                this.$api.boot({activityId:1}),
+                // this.$wxsdk.getWxConfig(),
+                this.boot(),
             ];
             return list;
+        },
+        boot(){
+            return new Promise((async resolve=>{
+                let jwt = this.$storage.load("jwt");
+                if(jwt){
+                    await this.$api.injectJwt(jwt);
+                    await this.$api.boot({activityId:1});
+                }
+                resolve();
+       
+            }));
+  
         },
         loaded(type) {
             this.loadNum[type]++;
@@ -122,14 +134,13 @@ export default {
         loadFinish() {
             this.$bus.ready = true;
             this.$bus.showMusicIcon = true;
-            const jwt = this.$storage.load("jwt");
-            // if (!jwt) {
-            //     this.$router.replace('login');
-            // } else {
-            //     this.$api.injectJwt(jwt);
-            //     this.$router.replace('home');
-            // }
-            this.$router.replace('home');
+            let jwt = this.$storage.load("jwt");
+            if (!jwt) {
+                this.$router.replace('login');
+            } else {
+                this.$api.injectJwt(jwt);
+                this.$router.replace('home');
+            }
            
         },
         playAudio(path, config) {
@@ -145,25 +156,31 @@ export default {
 
 <style lang="less">
 .page-loading {
-  .page(cornflowerblue);
+  .page();
+  .bg-cover("loading_bg.png");
   > .progress-box {
     width: 60%;
     .center();
     .flex-column();
     > .progress-text {
-      font-size: 0.3rem;
-      margin-bottom: 10px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      font-style: italic;
+      font-stretch: normal;
+      line-height: 0.68rem;
+      letter-spacing: 0px;
+      color: #427cff;
+      margin-bottom: 0.6rem;
     }
     > .progress-bg {
-      .wh(100%, 10px);
-      background-color: white;
-      border-radius: 10px;
+      .wh(6.04rem, 0.38rem);
+      .bg-contain("progress_bg.png");
+      //   background-color: white;
       > .progress {
         width: 0%;
-        height: 10px;
-        background-color: aquamarine;
+        height: 0.38rem;
+        .bg-contain("progress.png");
         transition: width 0.3s;
-        border-radius: 10px;
       }
     }
   }

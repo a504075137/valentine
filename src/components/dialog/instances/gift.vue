@@ -83,6 +83,17 @@ export default {
                         this.$emit('close');
                         return;
                     }
+                    if(result.code === '1013'){
+                        this.$toast('签到过了');
+                        this.$loading.hide();
+                        this.$emit('close');
+                        return;
+                    }
+                    if(result.code === '1012'){
+                        this.$toast('补签日期不在活动期间');
+                        this.$loading.hide();
+                        return;
+                    }
                     if(result.sendGiftList.length>0){
                         const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'sign-success';
                         this.$dialog.show("gift",{vBind:{type}});

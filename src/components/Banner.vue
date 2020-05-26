@@ -1,12 +1,15 @@
 <template>
-  <div class="wrapper">
+  <div class="ban-wrapper">
     <div class="banner">
       <swiper :options="swiperOption" class="swiper">
         <swiper-slide>
           <div class="banner-img"></div>
         </swiper-slide>
         <swiper-slide>
-          <div class="banner-img"></div>
+          <div
+            class="banner-img"
+            :style="{backgroundImage:`url(${require(`@imgs/banner_2.png`)})`}"
+          ></div>
         </swiper-slide>
         <swiper-slide>
           <div class="banner-img"></div>
@@ -39,7 +42,7 @@ export default {
 </script>
 
 <style lang="less">
-.wrapper {
+.ban-wrapper {
   .wh(7.05rem, 2.41rem);
   margin: 0.37rem auto 0;
   @media @wide {

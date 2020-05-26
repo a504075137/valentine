@@ -12,7 +12,8 @@ const getJwt = () => {
 const testJwt = 'eyJhbGciOiJIUzUxMiJ9.eyJkYXRhIjp7InBob25lIjoiMTgxMjIxODA5NjQifSwiZXhwIjoxNTkyNzU2MDY0LCJzdWIiOiIifQ.Z7sSZC0Yw9o0xc_V7QNQWzbDQFhsjyoPWEPUD46BcaTmtydaIiNalTYIau8OO5LTxCdvy2wujMzAz_gX4g9nTw';
 
 
-const jwt = process.env.NODE_ENV === 'production' ? getJwt() : testJwt;
+// const jwt = process.env.NODE_ENV === 'production' ? getJwt() : testJwt;
+const jwt = testJwt;
 let userInfo = {};
 
 try {

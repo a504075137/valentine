@@ -11,7 +11,7 @@ if (fs.existsSync(lockFilePath)) {
     lockFileJson = JSON.parse(lockFileJson.toString());
 }
 
-const tinifyKey = '';
+const tinifyKey = "2WRMkDZF0g2sm10lxPHcByFzpjXTgB7w";
 if (tinifyKey === '') {
     console.log(chalk.red('请先在scripts/tinypng/index.js中配置tinypng的key，如果没有key，请前往【https://tinypng.com/developers】申请'));
     return;
@@ -108,13 +108,13 @@ function filter() {
 }
 
 console.log(chalk.green('开始认证tinypng key'));
-tinify.validate((err) => {
+tinify.validate(err => {
     if (err) {
         console.log(chalk.red(err.message));
         return;
     }
     console.log(chalk.green('认证成功！'));
-    tinifyLeft = 500- tinify.compressionCount || 500;
+    tinifyLeft = 500 - (+tinify.compressionCount || 0);
     if (tinifyLeft <= 0) {
         console.log(chalk.red('当前key的剩余可用数已用尽，请更换key重试！'));
         return;

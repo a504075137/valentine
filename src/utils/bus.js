@@ -25,7 +25,12 @@ const bus = new Vue({
                 unionid: '',
                 wxappid: ''
             },
-            signInfo: {},
+            signInfo: {
+                markList: [],
+                userGiftList: [],
+                giftConfigList: [],
+                config: {}
+            },
             refresh: true,
             activityId: 1,
             isLogin: false,

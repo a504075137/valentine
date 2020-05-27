@@ -41,8 +41,12 @@ class Api {
     homeConfig(params) {
         return auth.get('/index/status/get', params);
     }
-    boot(params) { // 获取奖品数据
-        return auth.get('/mark/boot', params);
+    boot(params) { // 获取用户奖品数据
+        return auth.get('/mark/userBoot', params);
+    }
+
+    getActivity(params) { // 获取活动配置
+        return get('/mark/boot', params);
     }
     mark(params) { // 签到
         return auth.post('/mark', params);

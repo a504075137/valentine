@@ -25,12 +25,13 @@ export default {
   .page(transparent);
   .flex();
   pointer-events: none;
+  z-index: 999999;
   > .toast-wrap {
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     box-sizing: border-box;
     text-align: center;
-    z-index: 99999999;
+    z-index: 999999;
     padding: 0.15rem 0.25rem;
     font-size: 0.3rem;
     font-weight: bold;

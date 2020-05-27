@@ -50,7 +50,7 @@ export default {
         //     });
         // },
         init(){
-            if(!this.$bus.isLogin) return;
+            // if(!this.$bus.isLogin) return;
             this.signDay = this.$bus.signInfo.markList.length;
             this.continueDay = this.$bus.signInfo.markList.length >0 ? this.$bus.signInfo.markList[0].continueDays:0;
             this.getGiftDate();

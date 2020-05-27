@@ -55,6 +55,7 @@
 import dayjs from 'dayjs';
 let startTime;
 let endTime;
+let shakeDay;
 export default {
     props:['giftDays'],
     data(){
@@ -76,7 +77,6 @@ export default {
             this.month=curdate.getMonth() +1;
             this.day=curdate.getDate();
             this.curDate = `${this.year}-${this.month}-${this.day}`;
-            if(!this.$bus.isLogin) return;
             startTime =dayjs(this.$bus.signInfo.config.startTime.split(" ")[0]);
             endTime =dayjs(this.$bus.signInfo.config.endTime);
         },
@@ -103,7 +103,6 @@ export default {
 
                 }
             }else{
-                console.log(1111,this.isBeforeNow(chooseDay) );
                 this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
             }
         },
@@ -144,6 +143,7 @@ export default {
             const list = this.giftDays.sort((a,b)=>{
                 return a.days - b.days;
             });
+           
             this.giftDay = list.map(item=>{
                 const date1 = new Date();
                 const date2 = new Date(date1);
@@ -151,6 +151,7 @@ export default {
                 item.date =`${date2.getFullYear()}-${date2.getMonth()+1}-${date2.getDate()}`;
                 return item;
             });
+            if(this.giftDay[0]) shakeDay = this.giftDay[0].date; // 保存离得最近一天的日期
         },
         setUserGiftList(){
             this.userGiftList = this.$bus.signInfo.userGiftList.map(item=>{
@@ -184,7 +185,8 @@ export default {
                     if(item.date === time){
                         flag = true;
                         itemInfo.push(item);
-                        shake = index === 0?true:false;
+                       
+                        shake = shakeDay === item.date?true:false;
                     } 
                 });
                 return {flag,itemInfo,shake};
@@ -206,7 +208,6 @@ export default {
         },
         noMarkDays(){
             return (time)=>{
-                if(!this.$bus.isLogin) return false;
                 const date = dayjs(time);
                 return (startTime.isBefore(date) || startTime.isSame(date)) && (endTime.isAfter(date));
             };
@@ -248,10 +249,7 @@ export default {
     },
     created(){
         this.getInitData();
-        if(this.$bus.isLogin){
-            this.initStatus();
-
-        }
+        this.initStatus();
     },
     watch:{
         "$bus.refresh"(val){
@@ -407,10 +405,5 @@ export default {
   to {
     transform: translate3d(-50%, -50%, 0) scale(1.2);
   }
-}
-.active-day:not(.now-day) {
-  color: #007fff;
-  // border: 2px solid #007fff;
-  // line-height: 46px;
 }
 </style>

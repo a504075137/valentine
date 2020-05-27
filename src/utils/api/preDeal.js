@@ -5,7 +5,13 @@ const preDealList = {
     },
     '/mark/boot': (res) => {
         console.log('info', res);
-        Vue.$bus.signInfo = res;
+        // Vue.$bus.signInfo = res;
+        Object.assign(Vue.$bus.signInfo, res);
+        Vue.$bus.refresh = !Vue.$bus.refresh;
+        return res;
+    },
+    '/mark/userBoot': (res) => {
+        Object.assign(Vue.$bus.signInfo, res);
         Vue.$bus.refresh = !Vue.$bus.refresh;
         return res;
     }

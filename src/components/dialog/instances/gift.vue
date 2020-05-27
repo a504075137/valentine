@@ -27,9 +27,20 @@
             </template>
           </template>
         </div>
+        <div :class="['text' , {'hasGain':hasGain || cantGain}]" v-else-if="giftInfo.length > 1">
+          <template v-if="cantGain">奖品是{{giftInfo[giftIndex].giftName}}</template>
+          <template v-else>
+            恭喜获得{{giftInfo[giftIndex].giftName}}
+            <template v-if="!hasGain">
+              <br />马上收下这份大礼吧！
+            </template>
+          </template>
+          <div class="arrow" @click="switchGift"></div>
+        </div>
         <div
           class="btn"
           v-if="(!hasGain && !cantGain) && (!$bus.isLogin || type !=='sign-success')"
+          data-clipboard-text="测试赋值淘口令"
           @click="recieve"
         >{{btnText[type]}}</div>
       </div>
@@ -40,6 +51,8 @@
 
 <script>
 import BaseDialog from "../BaseDialog.vue";
+import ClipboardJS from "clipboard";
+let clipFlag = false;
 export default {
     name: 'gift',
     meta: {
@@ -74,7 +87,8 @@ export default {
                 remark:'我要补签',
                 'get-gift':'马上领奖',
                 taobao:'复制淘口令'
-            }
+            },
+            giftIndex:0
         };
     },
     methods:{
@@ -133,14 +147,27 @@ export default {
                 }
                 
             }else if(this.type === 'taobao'){
-                this.$emit('close');
-                setTimeout(()=>{
-                    this.$dialog.show("gift",{vBind:{type:'taobao'}});
-                },1000);
+                // this.$emit('close');
+                // setTimeout(()=>{
+                //     this.$dialog.show("gift",{vBind:{type:'taobao'}});
+                // },1000);
             }else if(this.type === 'sign-success'){
                 this.$emit('close');
                 this.$router.replace("login");
             }
+        },
+        switchGift(){
+            this.giftIndex = this.giftIndex === this.giftInfo.length-1? 0 : this.giftIndex+1;
+        },
+        beforeShow(){
+            if(this.type !== 'taobao') return;
+            const clipboard = new ClipboardJS(".btn");
+            const _this = this;
+            clipboard.on("success", function(e) {
+                _this.$toast({ message: "复制成功" });
+                e.clearSelection();
+            });
+            clipFlag = true;
         }
     }
 };
@@ -169,6 +196,14 @@ export default {
         }
         &.success {
           margin-bottom: 1.5rem;
+        }
+        > .arrow {
+          .p-a();
+          top: 1.5rem;
+          right: -2rem;
+          padding: 1rem;
+          .wh(0.47rem, 0.94rem);
+          .bg-contain("arrow.png");
         }
       }
       > .btn {

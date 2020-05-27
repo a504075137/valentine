@@ -241,7 +241,7 @@ export default {
         },
         isBeforeNow(){
             return (time)=>{
-                return (dayjs(time).isBefore(dayjs()) && dayjs(time).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD'));
+                return (dayjs(time).isBefore(dayjs())&& dayjs(time).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD'));
             };
         }
 
@@ -377,7 +377,7 @@ export default {
               border-radius: 0;
             }
           }
-          > .activity-day:not(.has-day .now-day) {
+          > .activity-day:not(.has-day) {
             > .date-num {
               .p-r();
               > span {

@@ -56,6 +56,7 @@ import dayjs from 'dayjs';
 let startTime;
 let endTime;
 let shakeDay;
+let reMarkDay = 0;
 export default {
     props:['giftDays'],
     data(){
@@ -86,24 +87,27 @@ export default {
             if(markFlag){
                 const hasGift = this.hasGiftDate(`${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`);
                 if(hasGift.flag){
-                    this.$dialog.show("gift",{vBind:{type:'get-gift',hasGain:true,giftInfo:hasGift.itemInfo}});
+                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:hasGift.itemInfo}});
                     console.log("展示奖品",hasGift.itemInfo);
                 }else{
-                    this.$toast({message:'该日已签到'});
+                    // this.$toast({message:'该日已签到'});
+                    console.log("已签到");
                 }
                 return;
             }
             const hasGift = this.giftDate(`${this.year}-${this.month}-${day}`);
             if(!this.noMarkDays(chooseDay) || !this.isBeforeNow(chooseDay)){
                 if(hasGift.flag){
-                    this.$dialog.show("gift",{vBind:{type:'get-gift',hasGain:false,cantGain:true,giftInfo:hasGift.itemInfo}});
+                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:false,cantGain:true,giftInfo:hasGift.itemInfo}});
                     console.log("展示奖品",hasGift.itemInfo);
                 }else{
                     return;
 
                 }
-            }else{
-                this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
+            }else{ // 补签
+                if(reMarkDay < this.$bus.signInfo.config.reMarkTimes){
+                    this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
+                }
             }
         },
         handlePrev(){
@@ -130,20 +134,25 @@ export default {
 
         },
         initStatus(){ // 初始化抽奖日历状态
-
+            let markListFlag = false; // 判断今日有没有签到
+            reMarkDay = 0;
             this.list = this.$bus.signInfo.markList.map(item=>{
-                return item.createAt.split(" ")[0];
+                const date = item.createAt.split(" ")[0];
+                if(item.isReMark) reMarkDay+=1;
+                if(dayjs(date).format('YYYY-MM-DD') == dayjs().format('YYYY-MM-DD')) markListFlag = true; 
+                return date;
             });
-           
-            this.setGiftDay();
+            this.$bus.hasToday = markListFlag;
+            this.setGiftDay(markListFlag);
             this.setUserGiftList();
         },
-        setGiftDay(){
-            const hasMark = this.$bus.signInfo.markList.length;
+        setGiftDay(markListFlag){
+            
+
+            const hasMark = markListFlag? this.$bus.signInfo.markList.length:this.$bus.signInfo.markList.length +1;
             const list = this.giftDays.sort((a,b)=>{
                 return a.days - b.days;
             });
-           
             this.giftDay = list.map(item=>{
                 const date1 = new Date();
                 const date2 = new Date(date1);
@@ -327,7 +336,7 @@ export default {
         opacity: 0.2;
       }
       > .box {
-        margin: 0.34rem 0.25rem 0rem;
+        margin: 0 0.25rem;
         > .every-day {
           .p-r();
           display: inline-block;
@@ -343,10 +352,18 @@ export default {
           > .has-day {
             > .date-num {
               display: inline-block;
-              .wh(0.5rem);
-              line-height: 0.5rem;
-              border-radius: 50%;
-              background-color: #d3e4ff;
+              // .wh(0.5rem);
+              // line-height: 0.5rem;
+              // border-radius: 50%;
+              // background-color: #d3e4ff;
+              > .gift-icon {
+                margin: 0 auto;
+                .wh(0.18rem, 0.14rem);
+                .bg-contain("sign.png");
+                // .p-a();
+                // left: 50%;
+                // transform: translate3d(-50%, 0, 0);
+              }
             }
           }
           > .gift-day,
@@ -374,24 +391,44 @@ export default {
             > .date-num {
               border-radius: 0;
             }
+            &.has-day {
+              > .date-num {
+                position: static;
+                > span {
+                  opacity: 1;
+                }
+                > .gift-icon {
+                  position: static;
+                  margin: 0 auto;
+                  transform: translate3d(0, 0, 0);
+                  .wh(0.22rem, 0.19rem);
+                  .bg-contain("has_gift.png");
+                }
+              }
+            }
           }
           > .activity-day:not(.has-day) {
             > .date-num {
-              .p-r();
-              > span {
-                opacity: 0;
-              }
               > .gift-icon {
-                .p-a();
-                top: 50%;
-                left: 50%;
-                transform: translate3d(-50%, -50%, 0);
-                .wh(0.37rem);
-                .bg-contain("need_remark.png");
+                margin: 0 auto;
+                .wh(0.18rem, 0.14rem);
+                .bg-contain("no-sign.png");
               }
               // display: none;
             }
             // }
+          }
+          > .now-day {
+            // .bg-contain("now-day.png");
+            // background-position: center 0.025rem;
+            > .date-num {
+              > span {
+                .wh(0.68rem, 0.53rem);
+                line-height: 0.53rem;
+                .bg-contain("now-day.png");
+                display: inline-block;
+              }
+            }
           }
         }
       }

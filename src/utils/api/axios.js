@@ -29,11 +29,12 @@ axios.interceptors.response.use(response => {
                 data
             }
         } = response;
+        const res = data || payload;
         if (code != '0') {
-            data.msg = msg;
-            data.code = code;
+            res.msg = msg;
+            res.code = code;
         }
-        result = data;
+        result = res;
     } catch (e) {
         result = response.data;
     }

@@ -15,8 +15,9 @@
       </div>
     </div>
     <Calendar class="calendar" :giftDays="giftDays" />
-    <div class="btn" @click="mark"></div>
-    <div class="gift" @click="$router.replace('rule')"></div>
+    <div class="btn" @click="mark" v-if="!$bus.hasToday"></div>
+    <div class="btn hasToday" v-else></div>
+    <div class="gift" @click="$dialog.show('Rule',{save:true})"></div>
   </div>
 </template>
 
@@ -39,16 +40,13 @@ export default {
         this.init();
      
     },
-    mounted() {},
+    mounted() {
+    },
     components:{
         Calendar,
         Banner
     },
     methods:{
-        // getHomeConfig(){
-        //     this.$api.homeConfig().then(res=>{
-        //     });
-        // },
         init(){
             // if(!this.$bus.isLogin) return;
             this.signDay = this.$bus.signInfo.markList.length;
@@ -81,8 +79,8 @@ export default {
             await this.$api.boot({activityId:this.$bus.activityId});
             this.$loading.hide();
             if(markResult.sendGiftList.length>0){
-                const type = markResult.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
-                this.$dialog.show("gift",{vBind:{type,hasGain:false,giftInfo:markResult.sendGiftList}});
+                // const type = markResult.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
+                this.$dialog.show("gift",{vBind:{type:'display',hasGain:false,giftInfo:markResult.sendGiftList}});
             }else{
                 this.$dialog.show("gift",{vBind:{type:'sign-success'}});
 
@@ -132,6 +130,9 @@ export default {
     .wh(3.07rem, 0.74rem);
     margin-bottom: 0.43rem;
     .bg-contain("mark_btn.png");
+    &.hasToday {
+      .bg-contain("hasMark.png");
+    }
     @media @long {
       transform: scale(1.1);
       margin-bottom: 1rem;

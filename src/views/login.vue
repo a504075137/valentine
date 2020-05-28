@@ -21,7 +21,11 @@
       <input type="text" v-input placeholder="请再次输入密码.." v-model="register.repasswd" />
       <div class="submit" @click="sendRegister">立即注册</div>
     </section>
-    <div class="register" v-if="index === 0" @click="goRegister">立即注册</div>
+
+    <div class="register" v-if="index === 0" @click="goRegister">
+      <div class="desc">还没有账号？</div>
+      <a href="#">立即注册</a>
+    </div>
     <footer>
       登陆即代表您同意
       <span>《飞智用户协议》</span>
@@ -287,7 +291,7 @@ export default {
     }
   }
   > .register {
-    margin: 0.5rem auto 0;
+    margin: 0.1rem auto 0;
     text-align: center;
     font-size: 0.24rem;
     font-weight: normal;
@@ -295,6 +299,14 @@ export default {
     line-height: 0.44rem;
     letter-spacing: 1px;
     color: #ffffff;
+    > .desc {
+      text-decoration: none;
+      letter-spacing: 0.01rem;
+      color: #676767;
+    }
+    > a {
+      color: #ffffff;
+    }
   }
   > footer {
     .center-row();

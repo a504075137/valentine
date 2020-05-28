@@ -1,4 +1,4 @@
-const signUrl = 'https://custom.24haowan.com/public/wechat/sdk-config';
+const signUrl = 'http://comapi.codebear.cn/wx/sdk-config';
 
 const jsApiList = [
     // 分享朋友
@@ -14,10 +14,10 @@ let link = require('@imgs/share_icon.png');
 if (link.indexOf('//') === 0) {
     link = location.protocol + link;
 }
-
+link = "http://static.via.cool/web/feizhi-mark/static/img/share_icon.32821344.png";
 const defaultShareInfo = {
-    title: '默认分享标题',
-    desc: '默认分享描述',
+    title: '飞智618新品上新',
+    desc: '签到打卡赢全新蜂套2，还有更多好礼等你来拿',
     link: window.location.href.split('#')[0].split('?')[0],
     imgUrl: link,
     type: 'link',

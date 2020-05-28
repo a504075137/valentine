@@ -27,7 +27,9 @@ export default {
             swiperOption: {
                 pagination: {
                     el: ".swiper-pagination"
-                }
+                },
+                loop:true,
+                autoplay:true
             },
         };
     },

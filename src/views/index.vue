@@ -74,7 +74,7 @@ export default {
         },
         getApi() {
             const list = [
-                // this.$wxsdk.getWxConfig(),
+                this.$wxsdk.getWxConfig(),
                 this.boot(),
                 this.$api.getActivity({activityId:this.$bus.activityId})
             ];

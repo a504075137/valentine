@@ -34,7 +34,8 @@ const bus = new Vue({
             refresh: true,
             activityId: 1,
             isLogin: false,
-            ruleIndex: 0
+            ruleIndex: 0,
+            hasToday:false // 今天有没有签到
         };
     },
     created() {

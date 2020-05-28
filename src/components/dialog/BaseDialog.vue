@@ -111,7 +111,7 @@ export default {
   top: 0;
   left: 0;
   color: white;
-  z-index: 9999;
+  z-index: 999999;
   > .BaseDialog__wrapper_box {
     .p-a();
     .flex();

@@ -94,7 +94,7 @@ export default {
                 }
                
             }else{
-                this.$dialog.show("gift",{vBind:{type:'taobao'}});
+                this.$dialog.show("gift",{vBind:{type:'taobao',giftInfo:params}});
             }
         },
         submit(){

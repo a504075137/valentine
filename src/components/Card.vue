@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper">
     <div class="header">
-      <div class="pic"></div>
+      <div class="pic" :style="{backgroundImage:`url(${giftInfo.giftImg})`}"></div>
       <div class="content">
         <div class="name">{{giftInfo.giftName}}</div>
-        <div class="desc">这是一段描述文案这是一段描述文案这是一段描述文案</div>
+        <div class="desc">{{giftInfo.giftDescription}}</div>
       </div>
     </div>
     <div class="footer">
@@ -44,7 +44,8 @@ export default {
     .flex(space-around, center);
     > .pic {
       .wh(1.24rem);
-      background-color: #ffffff;
+      .contain();
+      // background-color: #ffffff;
       opacity: 0.73;
       border-radius: 50%;
       //   margin-left: 0.4rem;

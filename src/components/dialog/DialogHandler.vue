@@ -18,7 +18,6 @@
 <script>
 import Vue from "vue";
 import components from "./instances/index.js";
-
 export default {
     components,
     data() {
@@ -61,17 +60,13 @@ export default {
                 return false;
             }
             this.showOrHideAnimationOver = false;
-
             let willHandleDialog = Object.assign(defaultOptions, options, { name });
-
             if (this.savedDialogList.length > 0) {
                 await this.showNextDialog(willHandleDialog);
             } else {
                 await this.showDialog(willHandleDialog);
             }
-
             willHandleDialog.save && this.saveDialog(willHandleDialog);
-
             return true;
         },
         async close(closeAll = false) {
@@ -81,7 +76,8 @@ export default {
             if (closeAll) {
                 this.clearSave();
             }
-            await this.handleShowDialog(false, this.currentDialog);
+
+            await this.closeDialog();
             if (this.savedDialogList.length > 0) {
                 await this.showPreDialog();
             }
@@ -95,14 +91,20 @@ export default {
                 });
             });
         },
-        async showPreDialog() {
-            let willHandleDialog = this.savedDialogList.pop();
-            if (willHandleDialog.name === this.currentDialog.name) {
-                if (this.savedDialogList.length === 0) {
-                    return;
-                }
-                willHandleDialog = this.savedDialogList.pop();
+        async closeDialog() {
+            if (
+                this.savedDialogList.length > 0 &&
+                this.currentDialog.name ===
+                    this.savedDialogList[this.savedDialogList.length - 1].name
+            ) {
+                let willHandleDialog = this.savedDialogList.pop();
             }
+            await this.handleShowDialog(false, this.currentDialog);
+        },
+        async showPreDialog() {
+            let willHandleDialog = this.savedDialogList[
+                this.savedDialogList.length - 1
+            ];
             await this.showDialog(willHandleDialog);
         },
         async showNextDialog(willHandleDialog) {
@@ -119,15 +121,12 @@ export default {
             }
             this.showDialogHandler = isShow;
             let cbSuffix = isShow ? "Show" : "Close";
-
             dialog[`before${cbSuffix}`] && dialog[`before${cbSuffix}`]();
             this.dialogHandlerPointerEvents = "auto";
             await this.$func.wait(this.animationDuration);
-
             this.showOrHideAnimationOver = true;
             this.dialogHandlerPointerEvents = isShow ? "auto" : "none";
             dialog[`after${cbSuffix}`] && dialog[`after${cbSuffix}`]();
-
             this.addStatistics(isShow, willHandleDialog);
         },
         addStatistics(isShow, willHandleDialog) {

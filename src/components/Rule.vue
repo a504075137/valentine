@@ -8,15 +8,21 @@
     </header>
     <div class="content" v-if="index === 0">
       <div class="title">活动时间</div>
-      <div class="cont">2020年7月23日~2020年3月12日</div>
+      <div class="cont">即日起至 2020月8月31日</div>
+      <div class="title">活动方式</div>
+      <div class="cont">登录无忧行APP，进入指定活动页面即可参与抽奖活动，有机会赢取流量折扣券，大奖低至1折；</div>
       <div class="title">活动规则</div>
-      <div
-        class="cont"
-      >这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段</div>
+      <div class="cont">
+        1.每位用户每天进入活动页，即可获得一次抽奖机会，完成指定任务可获得额外的抽奖机会，单日最多可抽奖2次 ；
+        2.折扣券有效期及使用范围以所获得的奖品为准，请尽快在有效期内使用；
+        3.折扣券均为原价基础上折扣，与特价商品不可叠加享受优惠；
+        4.折扣券不可转让、不可折现，仅可本人使用；
+        5.该活动的奖励与 Apple Inc. 无关；
+      </div>
       <div class="title">主办方</div>
-      <div class="cont">这是一段规则这是一段规则这是一段这是一段规则这是一段规则这是一段这是一段</div>
+      <div class="cont">飞智科技</div>
     </div>
-    <div class="content" v-else-if="index === 1">
+    <div class="content" v-if="index === 1">
       <Card
         class="card"
         v-for="(item,index) in giftList"
@@ -25,7 +31,7 @@
         @getGift="getGift"
       />
     </div>
-    <div class="content" v-else>
+    <div class="content" v-if="index === 3">
       <div class="bg">
         <input v-input type="text" class="name" v-model="name" placeholder="请输入姓名" />
         <input v-input type="text" class="phone" v-model="phone" placeholder="请输入电话" />
@@ -36,6 +42,7 @@
         </div>
       </div>
     </div>
+
     <footer>
       <template v-if="index !==3">
         <div :class="['btn',{'active':index === 0} ]" @click="index = 0">活动规则</div>
@@ -69,32 +76,41 @@ export default {
         this.init();
     },
     mounted () {
-
     },
     methods: {
         init(){
             this.giftList = this.$bus.signInfo.userGiftList;
+            if(this.$bus.rulePage){
+                this.gift = this.$bus.rulePage;
+                if(this.$bus.rulePage.addressForm){
+                    const {name,phone,address} = JSON.parse(this.$bus.rulePage.addressForm);
+                    this.name = name;
+                    this.phone = phone;
+                    this.address = address;
+                }
+                this.index = 3;
+                this.$bus.rulePage = null;
+            }
         },
         close(){
-            if(this.index !== 3){
-                this.$router.replace('home');
-            }else{
-                this.index = 1;
-            }
+            this.$emit("close");
         },
         getGift(params){
             if(params.giftType === 'entity'){
-                this.index = 3;
+                // this.index = 3;
                 this.gift = params;
                 if(params.addressForm){
                     const {name,phone,address} = JSON.parse(params.addressForm);
                     this.name = name;
                     this.phone = phone;
                     this.address = address;
+                    this.$bus.$emit("goGetgift",{gift:params,name,phone,address});
+                }else{
+                    this.$bus.$emit("goGetgift",{gift:params});
                 }
                
             }else{
-                this.$dialog.show("gift",{vBind:{type:'taobao',giftInfo:params}});
+                this.$dialog.show("gift",{vBind:{type:'taobao',hasGain:true,giftInfo:params}});
             }
         },
         submit(){
@@ -139,6 +155,8 @@ export default {
 
 <style lang="less">
 .page-rule {
+  .page();
+  z-index: 9;
   .wh(100vw, 100vh);
   .flex-column(space-between, center);
   > header {
@@ -152,6 +170,14 @@ export default {
     line-height: 1.2rem;
     letter-spacing: 0.08rem;
     color: #4288ff;
+    > .back {
+      .p-a();
+      top: 0.1rem;
+      left: 0.1rem;
+      padding: 0.3rem;
+      .wh(0.23rem, 0.4rem);
+      .bg-contain("back.png");
+    }
     > .close {
       .p-a();
       top: 0.43rem;

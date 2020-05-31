@@ -77,7 +77,8 @@ export default {
                     await this.$api.boot({activityId:this.$bus.activityId});
                     this.$toast('登陆成功');
                     this.$loading.hide();
-                    this.$router.replace("home");
+                    // this.$router.replace("home");
+                    this.$emit("close");
 
                 } catch (error) {
                     console.log(error);
@@ -169,7 +170,8 @@ export default {
                     this.$bus.isLogin = true;
                     await this.$api.boot({activityId:this.$bus.activityId});
                     this.$toast('注册成功');
-                    this.$router.replace("home");
+                    // this.$router.replace("home");
+                    this.$emit("close");
                     break;
                 case 20001:
                     this.$toast('手机号码不合法');
@@ -216,6 +218,7 @@ export default {
 <style lang="less">
 .page-login {
   .page();
+  z-index: 99;
   .bg-cover("login_bg.png");
   > .header {
     .wh(100vw, 1.18rem);

@@ -1,21 +1,32 @@
 <template>
   <div class="taobao-content">
-    <div class="taobao-title" v-if="hasGain">恭喜获得！</div>
-    <Ticket :giftInfo="giftInfo" />
-    <slot></slot>
-    <template v-if="giftInfo.giftType == 'taobao'">
-      <div
-        v-if="hasGain"
-        class="taobaobtn"
-        :data-clipboard-text="giftInfo.taobaoKey"
-        @click="recieve"
-      >
-        <template v-if="$bus.isWeixinBrowser">复制淘口令</template>
-        <template v-else>领取优惠券</template>
-      </div>
+    <template v-if="!giftInfo.none">
+      <div class="taobao-title" v-if="hasGain">恭喜获得！</div>
+      <Ticket :giftInfo="giftInfo" />
+      <slot></slot>
+      <template v-if="giftInfo.giftType == 'taobao'">
+        <div
+          v-if="hasGain"
+          class="taobaobtn"
+          :data-clipboard-text="giftInfo.taobaoKey"
+          @click="recieve"
+        >
+          <template v-if="$bus.isWeixinBrowser">复制淘口令</template>
+          <template v-else>领取优惠券</template>
+        </div>
+      </template>
+      <template v-else>
+        <div class="taobaobtn" @click="goFrom" v-if="hasGain">去填写信息</div>
+      </template>
     </template>
     <template v-else>
-      <div class="taobaobtn" @click="goFrom">去填写信息</div>
+      <!-- 奖品没了 -->
+      <div class="taobao-title noneGift" v-if="hasGain">以下奖品被领光啦</div>
+
+      <div class="icon" :style="{backgroundImage:`url(${require(`@imgs/icon_get-gift.png`)})`}"></div>
+      <div class="giftName">{{giftInfo.giftName}}</div>
+      <div class="desc">还有其他精彩礼品等着你！</div>
+      <div class="taobaobtn" @click="$emit('close')">继续签到</div>
     </template>
 
     <!-- <div v-if="$bus.isWeixinBrowser" class="taobao-text">复制淘口令，打开淘宝即可领取优惠券</div> -->
@@ -50,6 +61,7 @@ export default {
         }
     },
     mounted(){
+        console.log(1111,this.giftInfo);
     }
 };
 </script>
@@ -114,9 +126,30 @@ export default {
     font-stretch: normal;
     letter-spacing: 0.02rem;
     color: #1556ff;
+    &.noneGift {
+      color: #ffffff;
+    }
   }
   &:last-child {
     margin-bottom: 0.4rem;
+  }
+  > .icon {
+    .wh(2.13rem, 1.79rem);
+    .contain();
+  }
+  > .giftName {
+    font-size: 0.24rem;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 0.01rem;
+    color: #eaf5ff;
+  }
+  > .desc {
+    font-size: 0.24rem;
+    font-weight: normal;
+    font-stretch: normal;
+    color: #eaf5ff;
+    opacity: 0.5;
   }
 }
 </style>

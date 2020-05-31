@@ -34,6 +34,9 @@ export default {
     },
     methods: {
         async init() {
+            if(window.$query.activityId){
+                this.$bus.activityId = window.$query.activityId;
+            }
             this.total = {
                 img: 0,
                 audio: 0,

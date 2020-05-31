@@ -95,7 +95,6 @@ export default {
 
             });      
             this.$bus.$on("goGetgift",(e)=>{
-                console.log(111,e);
                 this.giftContent = e;
                 this.showGetgift = true;
             });
@@ -118,7 +117,11 @@ export default {
             }
             this.$loading.show();
             const markResult = await this.$api.mark({activityId:this.$bus.signInfo.config.id});
-            console.log("mark",markResult);
+            const {sendGiftList} = markResult;
+            const hasList = this.$bus.signInfo.giftConfigList.filter((item)=>{
+                return item.days === 1;
+            });
+            console.log("mark",markResult,hasList);
             if(markResult.code == '1008'){
                 this.$toast({message:markResult.msg});
                 this.$loading.hide();
@@ -126,13 +129,34 @@ export default {
             }
             await this.$api.boot({activityId:this.$bus.activityId});
             this.$loading.hide();
-            if(markResult.sendGiftList.length>0){
+            if(sendGiftList.length === hasList.length){
+                if(markResult.sendGiftList.length>0){
                 // const type = markResult.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
-                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:markResult.sendGiftList}});
-            }else{
-                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:markResult.sendGiftList}});
+                }else{
+                    this.$dialog.show("gift",{vBind:{type:'sign-success'}});
 
+                }
+            }else{
+               
+                const noneGift = hasList.filter(item=>{
+                    let flag = true;
+                    sendGiftList.forEach(oitem=>{
+                        if(oitem.id === item.id){
+                            flag = false;
+                        }
+                    });
+                    return flag;
+                });
+                console.log(757571,noneGift,hasList,sendGiftList);
+                noneGift.map(item=>{
+                    item.none= true;
+                    return item;
+                });
+                console.log("没礼物",noneGift);
+                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:[...sendGiftList,...noneGift]}});
             }
+           
         },
         async judgeShare(){
             if(window.$query.source){
@@ -164,9 +188,41 @@ export default {
                 this.$emit('close');
                 return;
             }
+            
+            if(result.code === '1009'){
+                this.$toast('活动未发布');
+                this.$loading.hide();
+                this.$emit('close');
+                return;
+            }
             if(result.code === '1012'){
                 this.$toast('补签日期不在活动期间');
                 this.$loading.hide();
+                return;
+            }
+
+            const {sendGiftList} = result;
+            const hasList = this.$bus.signInfo.giftConfigList.filter((item)=>{
+                return item.days === 1;
+            });
+            if(sendGiftList.length !== hasList.length){
+                const noneGift = hasList.filter(item=>{
+                    let flag = true;
+                    sendGiftList.forEach(oitem=>{
+                        if(oitem.id === item.id){
+                            flag = false;
+                        }
+                    });
+                    return flag;
+                });
+                noneGift.map(item=>{
+                    item.none= true;
+                    return item;
+                });
+                this.$loading.hide();
+
+                console.log("没礼物",noneGift);
+                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:[...sendGiftList,...noneGift]}});
                 return;
             }
             if(result.sendGiftList.length>0){

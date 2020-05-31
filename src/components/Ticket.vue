@@ -1,10 +1,15 @@
 <template>
-  <div class="ticket">
-    <div class="header">
-      <span>¥</span>
-      <span class="money">{{initMoney.cash}}</span>
-    </div>
-    <div class="desc">{{initMoney.limit}}</div>
+  <div :class="['ticket',{'card':giftInfo.giftType == 'taobao'}]">
+    <template v-if="giftInfo.giftType !== 'taobao'">
+      <div class="head" :style="{backgroundImage:`url(${giftInfo.giftImg})`}"></div>
+    </template>
+    <template v-else>
+      <div class="header">
+        <span>¥</span>
+        <span class="money">{{initMoney.cash}}</span>
+      </div>
+      <div class="desc">{{initMoney.limit}}</div>
+    </template>
   </div>
 </template>
 
@@ -41,8 +46,10 @@ export default {
 
 <style lang="less">
 .ticket {
-  .wh(2.02rem, 2.55rem);
-  .bg-contain("ticket.png");
+  &.card {
+    .wh(2.02rem, 2.55rem);
+    .bg-contain("ticket.png");
+  }
   > .header {
     text-align: center;
     font-size: 0rem;
@@ -73,6 +80,12 @@ export default {
     @media @wide {
       margin-top: -0.19rem;
     }
+  }
+  > .head {
+    .wh(1.88rem);
+    border-radius: 50%;
+    border: solid 0.12rem #2b58f3;
+    .contain();
   }
 }
 </style>

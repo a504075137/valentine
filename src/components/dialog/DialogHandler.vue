@@ -48,7 +48,7 @@ export default {
             let defaultOptions = {
                 vBind: {},//弹窗的props
                 save: false,//是否保存弹窗.如果设置了为true,当在弹窗打开新的弹窗，新的弹窗关闭时依然显示此弹窗
-                showDuration: 1000,//显示弹窗动画时长
+                showDuration: 700,//显示弹窗动画时长
                 closeDuration: 1000//关闭弹窗动画时长
             };
             if (!this.showOrHideAnimationOver) {

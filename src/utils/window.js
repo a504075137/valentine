@@ -6,7 +6,7 @@ if (window.$query.debug == 'true') {
     let s = document.createElement('script');
     s.async = true;
     s.src = '//res.cdn.24haowan.com/dingzhi/public/js/vconsole.min.js';
-    let loadEnd = ()=> {
+    let loadEnd = () => {
         s.parentNode.removeChild(s);
         s.removeEventListener('load', loadEnd, false);
         let vConsole = new window.VConsole();
@@ -15,7 +15,7 @@ if (window.$query.debug == 'true') {
     document.body.appendChild(s);
 }
 
-window.baidu = (type, action = '-', label = '-')=> {
+window.baidu = (type, action = '-', label = '-') => {
     if (process.env.NODE_ENV !== 'production') {
         // console.warn('dev模式不上报百度统计：', type, action, label)
     } else {

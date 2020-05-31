@@ -1,5 +1,22 @@
 <template>
   <div class="home">
+    <transition name="bounceUp">
+      <Rule v-if="showRule" @close="showRule = false" />
+    </transition>
+    <transition name="bounceUp">
+      <Login v-if="showLogin" @close="showLogin = false" />
+    </transition>
+    <transition name="bounceUp">
+      <Getgift
+        v-if="showGetgift"
+        :name="giftContent.name"
+        :address="giftContent.address"
+        :gift="giftContent.gift"
+        :phone="giftContent.phone"
+        @close="showGetgift = false"
+      />
+    </transition>
+
     <Banner />
     <div class="sign">
       <div class="text">
@@ -14,16 +31,20 @@
         天
       </div>
     </div>
+    <!-- <div class="test">{{query}}</div> -->
     <Calendar class="calendar" :giftDays="giftDays" />
     <div class="btn" @click="mark" v-if="!$bus.hasToday"></div>
     <div class="btn hasToday" v-else></div>
-    <div class="gift" @click="$dialog.show('Rule',{save:true})"></div>
+    <div class="gift" @click="showRule=true"></div>
   </div>
 </template>
 
 <script>
 import Calendar from '@c/Calendar';
 import Banner from '@c/Banner';
+import Rule from '@c/Rule';
+import Login from '@c/Login';
+import Getgift from '@c/Getgift';
 export default {
     name: "home",
     meta: {
@@ -33,7 +54,17 @@ export default {
         return {
             signDay:0,
             continueDay:0,
-            giftDays:[]
+            giftDays:[],
+            showRule:false,
+            showLogin:false,
+            showGetgift:false,
+            query:window.$query.source,
+            giftContent:{
+                gift:null,
+                name:null,
+                phone:null,
+                address:null
+            }
         };
     },
     created(){
@@ -44,7 +75,10 @@ export default {
     },
     components:{
         Calendar,
-        Banner
+        Banner,
+        Rule,
+        Login,
+        Getgift
     },
     methods:{
         init(){
@@ -52,6 +86,20 @@ export default {
             this.signDay = this.$bus.signInfo.markList.length;
             this.continueDay = this.$bus.signInfo.markList.length >0 ? this.$bus.signInfo.markList[0].continueDays:0;
             this.getGiftDate();
+            this.judgeShare();
+            this.$bus.$on("goRule",()=>{
+                this.showRule = true;
+            });
+            this.$bus.$on("goLogin",()=>{
+                this.showLogin = true;
+
+            });      
+            this.$bus.$on("goGetgift",(e)=>{
+                console.log(111,e);
+                this.giftContent = e;
+                this.showGetgift = true;
+            });
+            
         },
         getGiftDate(){ // 获取显示奖品icon的日期
             const hasMark = this.$bus.signInfo.markList.length;
@@ -80,11 +128,58 @@ export default {
             this.$loading.hide();
             if(markResult.sendGiftList.length>0){
                 // const type = markResult.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
-                this.$dialog.show("gift",{vBind:{type:'display',hasGain:false,giftInfo:markResult.sendGiftList}});
+                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:markResult.sendGiftList}});
             }else{
                 this.$dialog.show("gift",{vBind:{type:'sign-success'}});
 
             }
+        },
+        async judgeShare(){
+            if(window.$query.source){
+                const markDate = this.$storage.load("share");
+                if(!markDate){
+                    return;
+                }
+                this.reMark(markDate);
+                this.$storage.save("share",'');
+            }
+          
+        },
+        async reMark(markDate){
+            if(!this.$bus.isLogin){
+                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                return;
+            }
+            this.$loading.show();
+            const result = await this.$api.remark({activityId:this.$bus.signInfo.config.id,date: markDate});
+            if(result.code === '1013'){
+                this.$toast({message:"超出补签次数"});
+                this.$loading.hide();
+                this.$emit('close');
+                return;
+            }
+            if(result.code === '1011'){
+                this.$toast('签到过了');
+                this.$loading.hide();
+                this.$emit('close');
+                return;
+            }
+            if(result.code === '1012'){
+                this.$toast('补签日期不在活动期间');
+                this.$loading.hide();
+                return;
+            }
+            if(result.sendGiftList.length>0){
+                // const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
+                await this.$api.boot({activityId:this.$bus.activityId});
+                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,cantGain:false,giftInfo:result.sendGiftList}});
+                this.$loading.hide();
+                return;
+            }
+            await this.$api.boot({activityId:this.$bus.activityId});
+            this.$loading.hide();
+            // this.$toast({message:"补签成功"});
+            this.$dialog.show("gift",{vBind:{type:'sign-success'}});
         },
     },
     watch:{
@@ -100,6 +195,9 @@ export default {
   .bg-cover("bg.png");
   overflow: hidden;
   .flex-column(space-around, center);
+  > .test {
+    color: #ffffff;
+  }
   > .sign {
     .wh(60vw, 0.24rem);
     margin: 0.22rem auto;

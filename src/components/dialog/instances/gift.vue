@@ -3,24 +3,13 @@
     v-bind="$attrs"
     v-on="$listeners"
     toastTransition="fade"
-    :maskClose="true"
+    :maskClose="false"
     class="dialog-gift"
   >
     <div class="gift-content">
-      <div class="content" v-if="type === 'taobao'">
-        <div class="taobao-title">恭喜获得！</div>
-        <Ticket :giftInfo="giftInfo" />
-        <div
-          class="taobaobtn"
-          :style="{marginBottom:$bus.isWeixinBrowser?0:'0.4rem'}"
-          :data-clipboard-text="giftInfo.taobaoKey"
-          @click="recieve"
-        >
-          <template v-if="$bus.isWeixinBrowser">复制淘口令</template>
-          <template v-else>领取优惠券</template>
-        </div>
-        <div v-if="$bus.isWeixinBrowser" class="taobao-text">复制淘口令，打开淘宝即可领取优惠券</div>
-      </div>
+      <template v-if="type === 'taobao'">
+        <Taobao :giftInfo="giftInfo" @close="$emit('close')" :hasGain="hasGain" @recieve="recieve" />
+      </template>
 
       <div class="content" v-else-if="type === 'get-gift'">
         <div class="icon" :style="{backgroundImage:`url(${require(`@imgs/icon_${type}.png`)})`}"></div>
@@ -66,15 +55,31 @@
         <div class="btn" @click="recieve">{{btnText[type]}}</div>
       </div>
       <div class="content display" v-else-if="type === 'display'">
-        <Ticket :giftInfo="giftInfo[giftIndex]?giftInfo[giftIndex]:giftInfo[0]" />
-        <div
-          class="taobao-text"
-          v-if="giftInfo[0].days"
-        >累计签到 {{giftInfo[giftIndex] ? giftInfo[giftIndex].days:giftInfo[0].days}} 天可获得</div>
-        <div class="text">
-          <div class="arrow" @click="switchGift" v-if="giftInfo.length > 1"></div>
-          {{giftInfo[giftIndex] ? giftInfo[giftIndex].giftName:giftInfo[0].giftName}}
+        <div class="swiper-container taobaobanner">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" v-for="(item,index) in giftInfo" :key="index">
+              <Taobao
+                :giftInfo="item ? item:giftInfo[0]"
+                :hasGain="hasGain"
+                @recieve="recieve"
+                @close="$emit('close')"
+              >
+                <div class="text">
+                  <div class="taobao-text" v-if="item.days && !hasGain">累计签到 {{item.days}} 天可获得</div>
+                  {{item ? item.giftName:giftInfo[0].giftName}}
+                </div>
+              </Taobao>
+            </div>
+          </div>
         </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <!-- <div class="arrow" v-if="giftInfo.length > 1 && giftIndex < giftInfo.length-1"></div>
+        <div
+          class="arrow left"
+          @click="switchGift('prev')"
+          v-if="giftInfo.length > 1 && giftIndex>0"
+        ></div>-->
       </div>
 
       <div class="close-btn" @click="$emit('close')"></div>
@@ -86,7 +91,11 @@
 import BaseDialog from "../BaseDialog.vue";
 import ClipboardJS from "clipboard";
 import Ticket from "@c/Ticket";
+import Taobao from "@c/Taobao";
+import Swiper from 'swiper';
+import "swiper/css/swiper.min.css";
 let clipFlag = false;
+let mySwiper;
 export default {
     name: 'gift',
     meta: {
@@ -94,7 +103,8 @@ export default {
     },
     components: {
         BaseDialog,
-        Ticket
+        // Ticket,
+        Taobao
     },
     props:['type','giftInfo','hasGain','cantGain','date'],
     data(){
@@ -129,22 +139,32 @@ export default {
     methods:{
         async recieve(){
             if(this.type === 'remark'){
-                this.$dialog.show("Share");
-                this.$bus.$off("wx-share",this.reMark);
-                this.$bus.$on("wx-share",this.reMark);
+                if(!this.$bus.isWeixinBrowser){
+                    // console.log(11,this.date);
+                    this.$dialog.show("Share");
+                    this.$storage.save("share",this.date);
+                }else{
+                    this.$dialog.show("Share");
+                    this.$bus.$off("wx-share",this.reMark);
+                    this.$bus.$on("wx-share",this.reMark);
+                }
+               
             }else if(this.type === 'get-gift'){
                 this.recieveGetGift();
                 
-            }else if(this.type === 'taobao'){
+            }else if(this.type === 'taobao' || this.type === 'display'){
                 if(this.$bus.isWeixinBrowser){
                     console.log("复制");
                 }else{
-                    window.location.replace(this.giftInfo.taobaoAppUrl);
+                    // console.log(1111,this.giftInfo);
+                    const link = this.giftInfo.taobaoAppUrl || this.giftInfo[this.giftIndex].taobaoAppUrl; 
+                    window.location.replace(link);
                 }
                
             }else if(this.type === 'sign-success'){
                 this.$emit('close');
-                this.$router.replace("login");
+                // this.$router.replace("login");
+                this.$bus.$emit("goLogin");
             }
         },
         recieveGetGift(){
@@ -158,20 +178,27 @@ export default {
             this.$emit('close');
             this.$router.replace('rule');
         },
-        switchGift(){
-            this.giftIndex = this.giftIndex === this.giftInfo.length-1? 0 : this.giftIndex+1;
+        switchGift(direction){
+            if(direction === 'next'){
+                this.giftIndex = this.giftIndex === this.giftInfo.length-1? this.giftInfo.length-1 : this.giftIndex+1;
+            }else{
+                this.giftIndex = this.giftIndex === 0? 0 : this.giftIndex-1;
+            }
+            
         },
         beforeShow(){
-            console.log(this.giftInfo);
             this.giftIndex = 0;
-            if(this.type !== 'taobao' || !this.$bus.isWeixinBrowser) return;
+            this.initBanner();
+
+            if((this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
+            
             const clipboard = new ClipboardJS(".taobaobtn");
             const _this = this;
             clipboard.on("success", this.copy);
             clipFlag = true;
         },
         copy(e){
-            if( this.type !== 'taobao' || !this.$bus.isWeixinBrowser) return;
+            if( (this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
             this.$toast({ message: "淘口令复制成功" });
             e.clearSelection();
         },
@@ -207,7 +234,7 @@ export default {
                 // const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
                 await this.$api.boot({activityId:this.$bus.activityId});
                 setTimeout(()=>{
-                    this.$dialog.show("gift",{vBind:{type:'get-gift',hasGain:true,cantGain:false,giftInfo:result.sendGiftList}});
+                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,cantGain:false,giftInfo:result.sendGiftList}});
                 },1000);
                 this.$loading.hide();
                 this.$emit('close');
@@ -222,6 +249,39 @@ export default {
                 this.$dialog.show("gift",{vBind:{type:'sign-success'}});
             },1000);
         },
+        initBanner(){
+            this.$nextTick(()=>{
+                // if(mySwiper) {
+                //     mySwiper.updateSlides();
+                //     return;
+                // }
+                mySwiper = new Swiper ('.swiper-container.taobaobanner', {
+                    loop: false, // 循环模式选项
+                    init: true,
+                    allowTouchMove: false,
+                    initialSlide: 0,
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        // prevEl: '.swiper-button-prev',
+                        prevEl: '.swiper-button-prev',
+                    },
+        
+                });
+            });
+           
+        },
+        beforeClose(){
+            if(mySwiper && this.giftInfo && this.giftInfo.length>0){
+                setTimeout(()=>{
+                    mySwiper.slideTo(0, 1, false);
+                },1000);
+            }
+            
+           
+        }
+    },
+    mounted(){
+
     }
 };
 </script>
@@ -234,16 +294,33 @@ export default {
       .bg-contain("dialog_bg.png");
       .flex-column(space-around, center);
       &.display {
-        > .taobao-text {
+        .taobao-text {
           margin-bottom: 0;
         }
-        > .text {
+        .text {
           font-size: 0.28rem;
           font-weight: bold;
           font-stretch: normal;
           letter-spacing: 1px;
           color: #eaf5ff;
           margin-bottom: 0.5rem;
+        }
+        // > .arrow {
+        //   .p-a();
+        //   top: 1.5rem;
+        //   right: -2rem;
+        //   padding: 1rem;
+        //   .wh(0.47rem, 0.94rem);
+        //   .bg-contain("arrow.png");
+        //   &.left {
+        //     left: -2rem;
+        //   }
+        // }
+        .taobao-content {
+          background: none;
+        }
+        > .swiper-container {
+          .wh(4.68rem, 6.07rem);
         }
       }
       > .icon {
@@ -269,6 +346,42 @@ export default {
           .bg-contain("arrow.png");
         }
       }
+      > .swiper-button-next {
+        .p-a();
+        top: 1.5rem;
+        right: -2rem;
+        padding: 1rem;
+        .wh(0.47rem, 0.94rem);
+        .bg-contain("arrow.png");
+        &:focus {
+          outline: none;
+        }
+        &::after {
+          content: "";
+        }
+        &:not(.swiper-button-disabled) {
+          animation: shakeRight 0.6s linear infinite alternate;
+        }
+      }
+      > .swiper-button-prev {
+        .p-a();
+        top: 1.5rem;
+        left: -2rem;
+        padding: 1rem;
+        .wh(0.47rem, 0.94rem);
+        .bg-contain("arrow.png");
+        transform-origin: center;
+        transform: rotate(180deg);
+        &:focus {
+          outline: none;
+        }
+        &::after {
+          content: "";
+        }
+        &:not(.swiper-button-disabled) {
+          animation: shakeLeft 0.6s linear infinite alternate;
+        }
+      }
       > .taobaobtn,
       > .btn {
         .wh(3.45rem, 1.02rem);
@@ -283,9 +396,7 @@ export default {
         color: #ffffff;
         margin-bottom: 0.6rem;
       }
-      > .taobaobtn {
-        margin-bottom: 0;
-      }
+
       > .taobao-title {
         margin-top: 0.4rem;
         font-size: 0.36rem;
@@ -309,6 +420,22 @@ export default {
       .wh(0.6rem, 1.2rem);
       .bg-contain("close_btn.png");
     }
+  }
+}
+@keyframes shakeRight {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0.1rem, 0, 0);
+  }
+}
+@keyframes shakeLeft {
+  from {
+    transform: translate3d(0, 0, 0) rotate(180deg);
+  }
+  to {
+    transform: translate3d(-0.1rem, 0, 0) rotate(180deg);
   }
 }
 </style>

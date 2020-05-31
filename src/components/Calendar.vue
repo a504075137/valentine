@@ -87,7 +87,7 @@ export default {
             if(markFlag){
                 const hasGift = this.hasGiftDate(`${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`);
                 if(hasGift.flag){
-                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:hasGift.itemInfo}});
+                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,cantGain:false,giftInfo:hasGift.itemInfo}});
                     console.log("展示奖品",hasGift.itemInfo);
                 }else{
                     // this.$toast({message:'该日已签到'});
@@ -427,6 +427,7 @@ export default {
                 line-height: 0.53rem;
                 .bg-contain("now-day.png");
                 display: inline-block;
+                opacity: 1;
               }
             }
           }

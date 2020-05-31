@@ -1,6 +1,6 @@
 <template>
   <div class="ban-wrapper">
-    <div class="banner">
+    <!-- <div class="banner">
       <swiper :options="swiperOption" class="swiper">
         <swiper-slide>
           <div
@@ -13,13 +13,31 @@
         </swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
       </swiper>
+    </div>-->
+    <div class="banner">
+      <div class="swiper-container banner">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div
+              class="banner-img"
+              :style="{backgroundImage:`url(${require(`@imgs/banner_2.png`)})`}"
+            ></div>
+          </div>
+          <div class="swiper-slide">
+            <div class="banner-img"></div>
+          </div>
+        </div>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { swiper, swiperSlide } from "vue-awesome-swiper";
-import "swiper/dist/css/swiper.css";
+// import { swiper, swiperSlide } from "vue-awesome-swiper";
+import Swiper from 'swiper';
+import "swiper/css/swiper.min.css";
 export default {
     name:"banner",
     data() {
@@ -34,8 +52,19 @@ export default {
         };
     },
     components:{
-        swiper,
-        swiperSlide
+        // swiper,
+        // swiperSlide
+    },
+    mounted(){
+        var myBannerSwiper = new Swiper ('.swiper-container.banner', {
+            loop: true, // 循环模式选项
+            // 如果需要分页器
+            pagination: {
+                el: '.swiper-pagination',
+            },
+            autoplay: true,
+    
+        });     
     }
 };
 </script>
@@ -50,11 +79,12 @@ export default {
   > .banner {
     .wh(100%);
     // .bg-contain("banner_1.png");
-
-    > .swiper {
-      .banner-img {
-        .wh(7.05rem, 2.41rem);
-        .bg-contain("banner_1.png");
+    > .swiper-container.banner {
+      .swiper-slide {
+        .banner-img {
+          .wh(7.05rem, 2.41rem);
+          .bg-contain("banner_1.png");
+        }
       }
       > .swiper-pagination {
         bottom: -3px;

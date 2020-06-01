@@ -122,7 +122,7 @@ export default {
                     giftId: this.gift.giftId}).then(
                     async res=>{
                         this.$toast({message:"填写成功"});
-                        await this.$api.boot({activityId:1});
+                        await this.$api.boot({activityId:this.$bus.signInfo.config.id});
                     }
                 ).catch(err=>{
                     console.log('err',err);

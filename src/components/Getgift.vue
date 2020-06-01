@@ -64,7 +64,7 @@ export default {
                             this.$toast({message:"活动结束"});
                         }else{
                             this.$toast({message:"填写成功"});
-                            await this.$api.boot({activityId:1});
+                            await this.$api.boot({activityId:this.$bus.signInfo.config.id});
                             this.$emit('close');
                         }
                       

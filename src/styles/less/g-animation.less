@@ -17,7 +17,7 @@
         animation: bounceOutLeft 1s;
     }
 }
-  
+
 .bounceRight {
     &-enter-active {
         animation: bounceInRight 1s;
@@ -35,7 +35,7 @@
         animation: bounceOut 0.6s;
     }
 }
-  
+
 .bounceDown {
     &-enter-active {
         animation: bounceInDown 1s;
@@ -44,10 +44,10 @@
         animation: bounceOutUp 1s;
     }
 }
-  
+
 .bounceUp {
     &-enter-active {
-        animation: bounceInUp 1s;
+        animation: bounceInUp .7s;
     }
     &-leave-active {
         animation: bounceOutDown 1s;
@@ -59,7 +59,7 @@
         opacity: 1;
         transform: translate3d(20px, 0, 0);
     }
-  
+
     to {
         opacity: 0;
         transform: translate3d(-2000px, 0, 0);
@@ -255,29 +255,29 @@
         -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
         animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     }
-  
+
     from {
         opacity: 0;
         -webkit-transform: translate3d(0, 3000px, 0);
         transform: translate3d(0, 3000px, 0);
     }
-  
+
     // 60% {
     //     opacity: 1;
     //     -webkit-transform: translate3d(0, -20px, 0);
     //     transform: translate3d(0, -20px, 0);
     // }
-  
+
     // 75% {
     //     -webkit-transform: translate3d(0, 10px, 0);
     //     transform: translate3d(0, 10px, 0);
     // }
-  
+
     90% {
         -webkit-transform: translate3d(0, -5px, 0);
         transform: translate3d(0, -5px, 0);
     }
-  
+
     to {
         -webkit-transform: translate3d(0, 0, 0);
         transform: translate3d(0, 0, 0);
@@ -313,7 +313,7 @@
     to {
         transform: translate3d(0, 0, 0);
     }
-  
+
     10%,
     30%,
     50%,
@@ -321,7 +321,7 @@
     90% {
         transform: translate3d(-1px, 0, 0);
     }
-  
+
     10%,
     40%,
     60%,
@@ -339,25 +339,25 @@
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
     }
-  
+
     10%,
     20% {
         transform: scale3d(0.95, 0.95, 0.95) rotate3d(0, 0, 1, -3deg);
     }
-  
+
     30%,
     50%,
     70%,
     90% {
         transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, 3deg);
     }
-  
+
     40%,
     60%,
     80% {
         transform: scale3d(1.05, 1.05, 1.05) rotate3d(0, 0, 1, -3deg);
     }
-  
+
     to {
         transform: scale3d(1, 1, 1);
     }
@@ -372,7 +372,7 @@
     20%,
     50%,
     80% {
-        transition-timing-function: cubic-bezier(0.215,0.61,0.355,1); 
+        transition-timing-function: cubic-bezier(0.215,0.61,0.355,1);
         /*贝塞尔曲线 ： X1 Y1 X2 Y2*/
         transform: translate3d(0,0,0); /*设置只在Z轴上移动*/
     }

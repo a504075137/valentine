@@ -69,7 +69,7 @@ export default {
     },
     created(){
         this.init();
-     
+
     },
     mounted() {
     },
@@ -93,12 +93,12 @@ export default {
             this.$bus.$on("goLogin",()=>{
                 this.showLogin = true;
 
-            });      
+            });
             this.$bus.$on("goGetgift",(e)=>{
                 this.giftContent = e;
                 this.showGetgift = true;
             });
-            
+
         },
         getGiftDate(){ // 获取显示奖品icon的日期
             const hasMark = this.$bus.signInfo.markList.length;
@@ -138,7 +138,7 @@ export default {
 
                 }
             }else{
-               
+
                 const noneGift = hasList.filter(item=>{
                     let flag = true;
                     sendGiftList.forEach(oitem=>{
@@ -156,18 +156,20 @@ export default {
                 console.log("没礼物",noneGift);
                 this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:[...sendGiftList,...noneGift]}});
             }
-           
+
         },
         async judgeShare(){
-            if(window.$query.source){
+            // 从APP进入时，会默认带上source=app的，所以要依赖source=share来判断分享态
+            if(window.$query.source == 'share'){
                 const markDate = this.$storage.load("share");
                 if(!markDate){
                     return;
                 }
+
                 this.reMark(markDate);
                 this.$storage.save("share",'');
             }
-          
+
         },
         async reMark(markDate){
             if(!this.$bus.isLogin){
@@ -188,7 +190,7 @@ export default {
                 this.$emit('close');
                 return;
             }
-            
+
             if(result.code === '1009'){
                 this.$toast('活动未发布');
                 this.$loading.hide();

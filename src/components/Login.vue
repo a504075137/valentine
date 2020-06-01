@@ -1,17 +1,17 @@
 <template>
   <div class="page-login">
     <header class="header">
-      {{['登陆','注册'][index]}}
+      {{['登录飞智帐号','注册'][index]}}
       <div class="back" v-if="index ==1" @click="index = 0"></div>
     </header>
     <section class="content" v-if="index ==0">
       <input type="text" v-input placeholder="请输入您的手机号/邮箱.." v-model="phone" />
       <input type="text" v-input placeholder="请输入密码.." v-model="password" />
-      <div class="submit" @click="login">登陆</div>
+      <div class="submit" @click="login">登录</div>
     </section>
     <section class="content regist" v-else>
       <input type="text" v-input placeholder="请输入您的昵称.." v-model="register.name" />
-      <input type="text" v-input placeholder="请输入您的手机号/邮箱.." v-model="register.phone" />
+      <input type="text" v-input placeholder="请输入您的手机号.." v-model="register.phone" />
       <div class="sms">
         <input type="text" v-input placeholder="请输入手机验证码.." v-model="register.code" />
         <div class="sms-btn btn-text" @click="sendSms">{{ sending ? secondNum : "获取验证码" }}</div>
@@ -26,8 +26,8 @@
       <div class="desc">还没有账号？</div>
       <a href="#">立即注册</a>
     </div>
-    <footer>
-      登陆即代表您同意
+    <footer v-show="false">
+      登录即代表您同意
       <span>《飞智用户协议》</span>
     </footer>
   </div>
@@ -39,7 +39,7 @@ let registFlag = false;
 export default {
     name: 'login',
     meta: {
-        cn: '登陆注册'
+        cn: '登录注册'
     },
     data () {
         return {
@@ -75,7 +75,7 @@ export default {
                     const result = await this.$api.login(obj);
                     this.$bus.isLogin = true;
                     await this.$api.boot({activityId:this.$bus.activityId});
-                    this.$toast('登陆成功');
+                    this.$toast('登录成功');
                     this.$loading.hide();
                     // this.$router.replace("home");
                     this.$emit("close");
@@ -92,7 +92,7 @@ export default {
                     }
                 }
             }
-           
+
 
         },
         _check() {
@@ -101,7 +101,7 @@ export default {
                 err = "请填写手机号";
             } else if (!this.password) {
                 err = "请填写密码";
-            } 
+            }
             err && this.$toast({ message: err });
             return !err;
         },
@@ -122,7 +122,7 @@ export default {
                 let result = await this.$api.sendCode({ mobile: this.register.phone });
                 this.$loading.hide();
                 result.err == 0  && this.$toast("发送验证码成功");
-                
+
                 if(result.err == 20001 ){
                     this.$toast("手机号码不合法");
                 }else if(result.err == 20002 ){
@@ -145,7 +145,7 @@ export default {
                         this.secondNum = seconds / 1000 + "s";
                     }, 1000);
                 }
-                
+
             } catch (error) {
                 this.$loading.hide();
                 console.log(error);
@@ -153,7 +153,7 @@ export default {
             }
         },
         async sendRegister(){
-            
+
             if(this._checkRegist()){
                 if(registFlag){
                     return;
@@ -207,7 +207,7 @@ export default {
                 err = "请填写再次输入密码";
             } else if (this.register.repasswd !== this.register.password) {
                 err = "两次密码不一致";
-            } 
+            }
             err && this.$toast({ message: err });
             return !err;
         },

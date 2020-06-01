@@ -112,7 +112,7 @@ export default {
             textList:{
                 'sign-success':{
                     p1:'签到成功！',
-                    p2:'马上登陆保存成绩吧~'
+                    p2:'马上登录保存成绩吧~'
                 },
                 remark:{
                     p1:'哦哟~您忘记签到啦！',
@@ -128,7 +128,7 @@ export default {
                 }
             },
             btnText:{
-                'sign-success':'立即登陆',
+                'sign-success':'立即登录',
                 remark:'我要补签',
                 'get-gift':'马上领奖',
                 taobao:'复制淘口令'
@@ -148,19 +148,19 @@ export default {
                     this.$bus.$off("wx-share",this.reMark);
                     this.$bus.$on("wx-share",this.reMark);
                 }
-               
+
             }else if(this.type === 'get-gift'){
                 this.recieveGetGift();
-                
+
             }else if(this.type === 'taobao' || this.type === 'display'){
                 if(this.$bus.isWeixinBrowser){
                     console.log("复制");
                 }else{
                     // console.log(1111,this.giftInfo);
-                    const link = this.giftInfo.taobaoAppUrl || this.giftInfo[this.giftIndex].taobaoAppUrl; 
+                    const link = this.giftInfo.taobaoAppUrl || this.giftInfo[this.giftIndex].taobaoAppUrl;
                     window.location.replace(link);
                 }
-               
+
             }else if(this.type === 'sign-success'){
                 this.$emit('close');
                 // this.$router.replace("login");
@@ -184,14 +184,14 @@ export default {
             }else{
                 this.giftIndex = this.giftIndex === 0? 0 : this.giftIndex-1;
             }
-            
+
         },
         beforeShow(){
             this.giftIndex = 0;
             this.initBanner();
 
             if((this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
-            
+
             const clipboard = new ClipboardJS(".taobaobtn");
             const _this = this;
             clipboard.on("success", this.copy);
@@ -207,8 +207,8 @@ export default {
                 this.$emit('close');
                 setTimeout(()=>{
                     this.$dialog.show("gift",{vBind:{type:'sign-success'}});
-                },600);  
-               
+                },600);
+
                 return;
             }
             this.$loading.show();
@@ -265,10 +265,10 @@ export default {
                         // prevEl: '.swiper-button-prev',
                         prevEl: '.swiper-button-prev',
                     },
-        
+
                 });
             });
-           
+
         },
         beforeClose(){
             if(mySwiper && this.giftInfo && this.giftInfo.length>0){
@@ -276,8 +276,8 @@ export default {
                     mySwiper.slideTo(0, 1, false);
                 },1000);
             }
-            
-           
+
+
         }
     },
     mounted(){

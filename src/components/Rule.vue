@@ -35,7 +35,7 @@
       <div class="bg">
         <input v-input type="text" class="name" v-model="name" placeholder="请输入姓名" />
         <input v-input type="text" class="phone" v-model="phone" placeholder="请输入电话" />
-        <input v-input type="text" class="email" v-model="address" placeholder="请输入邮箱" />
+        <input v-input type="text" class="address" v-model="address" placeholder="请输入收货地址" />
         <div class="desc">
           请填写您的领奖信息
           <br />我们将在活动结束后尽快安排发奖

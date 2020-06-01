@@ -2,6 +2,11 @@ import { getAllUrlQuery } from '@utils/func.js';
 
 window.$query = getAllUrlQuery();
 console.log('$query', window.$query);
+// setTimeout(()=>{
+//     alert(window.location.href);
+// },5000)
+
+window.$url = window.location.href;
 if (window.$query.debug == 'true') {
     let s = document.createElement('script');
     s.async = true;

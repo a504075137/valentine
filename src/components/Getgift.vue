@@ -56,6 +56,7 @@ export default {
             if(this._check()){
                 const obj = {name:this.giftParams.name,phone:this.giftParams.phone,address:this.giftParams.address};
                 console.log(obj,this.gift);
+                if(this.gift.id) this.gift.giftId = this.gift.id;
                 this.$api.sendForm({  activityId: this.$bus.signInfo.config.id,
                     addressForm: JSON.stringify(obj),
                     giftId: this.gift.giftId}).then(
@@ -64,15 +65,16 @@ export default {
                             this.$toast({message:"活动结束"});
                         }else{
                             this.$toast({message:"填写成功"});
-                            await this.$api.boot({activityId:1});
+
+                            await this.$api.boot({activityId: this.$bus.signInfo.config.id});
                             this.$emit('close');
                         }
-                      
+
                     }
                 ).catch(err=>{
                     console.log('err',err);
                 });
-            }   
+            }
         },
         _check() {
             let err = "";

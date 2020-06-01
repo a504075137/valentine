@@ -11,6 +11,10 @@ import '@directive';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import Vconsole from 'vconsole';
+
+let vConsole = new Vconsole();
+Vue.use(vConsole);
 
 Vue.publicPath = Vue.prototype.publicPath = process.env.BASE_URL;
 

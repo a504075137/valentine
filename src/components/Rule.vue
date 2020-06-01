@@ -8,9 +8,9 @@
     </header>
     <div class="content" v-if="index === 0">
       <div class="title">活动时间</div>
-      <div class="cont">即日起至 2020月8月31日</div>
+      <div class="cont">即日起至 2020月6月18日</div>
       <div class="title">活动方式</div>
-      <div class="cont">登录无忧行APP，进入指定活动页面即可参与抽奖活动，有机会赢取流量折扣券，大奖低至1折；</div>
+      <div class="cont">登录飞智APP，进入指定活动页面即可参与抽奖活动，有机会赢取淘宝优惠券，大奖低至1折；</div>
       <div class="title">活动规则</div>
       <div class="cont">
         1.每位用户每天进入活动页，即可获得一次抽奖机会，完成指定任务可获得额外的抽奖机会，单日最多可抽奖2次 ；
@@ -43,10 +43,10 @@
       </div>
     </div>
 
-    <footer>
+    <footer v-show="this.giftList.length>0">
       <template v-if="index !==3">
-        <div :class="['btn',{'active':index === 0} ]" @click="index = 0">活动规则</div>
-        <div :class="['btn',{'active':index === 1} ]" @click="index = 1">我的奖品</div>
+        <div :class="['btn',{'active':index === 0} ]" @click="index = 0" v-show="this.giftList.length>0">活动规则</div>
+        <div :class="['btn',{'active':index === 1} ]" @click="index = 1" v-show="this.giftList.length>0">我的奖品</div>
       </template>
       <template v-else>
         <div class="btn" @click="submit">提交信息</div>
@@ -64,7 +64,7 @@ export default {
     },
     data () {
         return {
-            index:1,
+            index:0,
             giftList:[],
             name:'',
             phone:'',
@@ -88,7 +88,7 @@ export default {
                     this.phone = phone;
                     this.address = address;
                 }
-                this.index = 3;
+                this.index = 0;
                 this.$bus.rulePage = null;
             }
         },
@@ -108,7 +108,7 @@ export default {
                 }else{
                     this.$bus.$emit("goGetgift",{gift:params});
                 }
-               
+
             }else{
                 this.$dialog.show("gift",{vBind:{type:'taobao',hasGain:true,giftInfo:params}});
             }
@@ -127,7 +127,7 @@ export default {
                 ).catch(err=>{
                     console.log('err',err);
                 });
-            }   
+            }
         },
         _check() {
             let err = "";

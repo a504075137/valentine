@@ -1,5 +1,5 @@
 <template>
-  <div class="taobao-content">
+  <div :class="['taobao-content',{'notGain':!hasGain}]">
     <template v-if="!giftInfo.none">
       <div class="taobao-title" v-if="hasGain">恭喜获得！</div>
       <Ticket :giftInfo="giftInfo" />
@@ -71,6 +71,12 @@ export default {
   .wh(4.68rem, 6.07rem);
   .bg-contain("dialog_bg.png");
   .flex-column(space-around, center);
+  &.notGain {
+    justify-content: center;
+    > .ticket {
+      margin-bottom: 0.3rem;
+    }
+  }
   > .text {
     text-align: center;
     font-size: 0.32rem;

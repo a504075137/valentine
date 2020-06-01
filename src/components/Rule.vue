@@ -45,8 +45,16 @@
 
     <footer v-show="this.giftList.length>0">
       <template v-if="index !==3">
-        <div :class="['btn',{'active':index === 0} ]" @click="index = 0" v-show="this.giftList.length>0">活动规则</div>
-        <div :class="['btn',{'active':index === 1} ]" @click="index = 1" v-show="this.giftList.length>0">我的奖品</div>
+        <div
+          :class="['btn',{'active':index === 0} ]"
+          @click="index = 0"
+          v-show="this.giftList.length>0"
+        >活动规则</div>
+        <div
+          :class="['btn',{'active':index === 1} ]"
+          @click="index = 1"
+          v-show="this.giftList.length>0"
+        >我的奖品</div>
       </template>
       <template v-else>
         <div class="btn" @click="submit">提交信息</div>
@@ -184,6 +192,7 @@ export default {
       right: 0.53rem;
       .wh(0.32rem);
       .bg-contain("close.png");
+      padding: 0 0 0.6rem 0.6rem;
     }
   }
   > .content {

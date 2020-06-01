@@ -8,7 +8,13 @@
       <div class="bg">
         <input v-input type="text" class="name" v-model="giftParams.name" placeholder="请输入姓名" />
         <input v-input type="text" class="phone" v-model="giftParams.phone" placeholder="请输入电话" />
-        <input v-input type="text" class="email" v-model="giftParams.address" placeholder="请输入邮箱" />
+        <input
+          v-input
+          type="text"
+          class="address"
+          v-model="giftParams.address"
+          placeholder="请输入收货地址"
+        />
         <div class="desc">
           请填写您的领奖信息
           <br />我们将在活动结束后尽快安排发奖
@@ -55,7 +61,8 @@ export default {
         submit(){
             if(this._check()){
                 const obj = {name:this.giftParams.name,phone:this.giftParams.phone,address:this.giftParams.address};
-                console.log(obj,this.gift);
+                console.log(JSON.stringify(this.gift));
+                if(!this.gift.giftId) this.gift.giftId = this.gift.id;
                 this.$api.sendForm({  activityId: this.$bus.signInfo.config.id,
                     addressForm: JSON.stringify(obj),
                     giftId: this.gift.giftId}).then(
@@ -64,15 +71,16 @@ export default {
                             this.$toast({message:"活动结束"});
                         }else{
                             this.$toast({message:"填写成功"});
-                            await this.$api.boot({activityId:this.$bus.signInfo.config.id});
+
+                            await this.$api.boot({activityId: this.$bus.signInfo.config.id});
                             this.$emit('close');
                         }
-                      
+
                     }
                 ).catch(err=>{
                     console.log('err',err);
                 });
-            }   
+            }
         },
         _check() {
             let err = "";

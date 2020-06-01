@@ -44,7 +44,9 @@ class Api {
     boot(params) { // 获取用户奖品数据
         return auth.get('/mark/userBoot', params);
     }
-
+    preLogin(params) { // 获取活动配置
+        return get('/login/feizhi/pre', params);
+    }
     getActivity(params) { // 获取活动配置
         return get('/mark/boot', params);
     }

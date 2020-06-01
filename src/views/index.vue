@@ -34,6 +34,7 @@ export default {
     },
     methods: {
         async init() {
+            console.log('页面初始化时间：'+new Date());
             if(window.$query.activityId){
                 this.$bus.activityId = window.$query.activityId;
             }
@@ -78,10 +79,29 @@ export default {
         getApi() {
             const list = [
                 this.$wxsdk.getWxConfig(),
-                this.boot(),
+                this.preLogin().then(this.boot),
                 this.$api.getActivity({activityId:this.$bus.activityId})
             ];
             return list;
+        },
+        async preLogin() {
+            let jwt = this.$storage.load("jwt");
+            if(!jwt){
+                // 从接口地址中，看看有没有JWT
+                const token = window.$query.token;
+                const uid = window.$query.uid;
+                if(token && uid){
+                    // 说明从链接中带入了参数
+                    const result = await this.$api.preLogin({uid});
+                    console.log("接口返回结果："+result);
+                    try{
+                        this.$storage.save('jwt', result);
+                    }catch(e){
+                        console.log(e);
+                    }
+
+                }
+            }
         },
         boot(){
             return new Promise((async resolve=>{
@@ -91,9 +111,9 @@ export default {
                     await this.$api.boot({activityId:this.$bus.activityId});
                 }
                 resolve();
-       
+
             }));
-  
+
         },
         loaded(type) {
             this.loadNum[type]++;
@@ -145,10 +165,10 @@ export default {
             } else {
                 this.$bus.isLogin = true;
                 this.$api.injectJwt(jwt);
-               
+
             }
             this.$router.replace('home');
-           
+
         },
         playAudio(path, config) {
             path = path.replace(/(\.\/)/, '').replace(/(\/)|(\.)/g, '_');

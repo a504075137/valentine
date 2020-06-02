@@ -419,6 +419,8 @@ export default {
       .center-row();
       .wh(0.6rem, 1.2rem);
       .bg-contain("close_btn.png");
+      padding: 0.6rem;
+      padding-top: 0;
     }
   }
 }

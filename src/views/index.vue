@@ -91,12 +91,10 @@ export default {
             let jwt = this.$storage.load("jwt");
             console.log(source,token,uid);
             if(source!=""&&token==""&&uid==""){
-                console.log(11)
                 // 说明从APP进入，且没有带身份，需要手动退出登录
                 this.$storage.delete("jwt");
             }else if(source!=""&&token&&uid&&!jwt){
                 // 从APP进入 且外面带了身份 里面还没有手动登录
-                window.webfunny && webfunny.wmInitUser(uid, "1.0.0");
                 const result = await this.$api.preLogin({uid});
                 console.log("接口返回结果："+result);
                 try{

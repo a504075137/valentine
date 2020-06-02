@@ -8,13 +8,7 @@
       <div class="bg">
         <input v-input type="text" class="name" v-model="giftParams.name" placeholder="请输入姓名" />
         <input v-input type="text" class="phone" v-model="giftParams.phone" placeholder="请输入电话" />
-        <input
-          v-input
-          type="text"
-          class="address"
-          v-model="giftParams.address"
-          placeholder="请输入收货地址"
-        />
+        <input v-input type="text" class="address" v-model="giftParams.address" placeholder="请输入收货地址" />
         <div class="desc">
           请填写您的领奖信息
           <br />我们将在活动结束后尽快安排发奖
@@ -23,7 +17,7 @@
     </div>
 
     <footer>
-      <div class="btn" @click="submit">提交信息</div>
+      <div class="btn" @click="submit">{{btnText}}</div>
     </footer>
   </div>
 </template>
@@ -42,7 +36,8 @@ export default {
                 name:'',
                 phone:'',
                 address:''
-            }
+            },
+            btnText: "更新信息"
         };
     },
     created () {
@@ -54,6 +49,7 @@ export default {
         init(){
             console.log(this.gift);
             Object.assign(this.giftParams,{name:this.name,phone:this.phone,address:this.address});
+            if(!this.name && !this.phone && !this.address) this.btnText = "提交信息";
         },
         close(){
             this.$emit("close");

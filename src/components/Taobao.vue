@@ -11,8 +11,9 @@
           :data-clipboard-text="giftInfo.taobaoKey"
           @click="recieve"
         >
-          <template v-if="$bus.isWeixinBrowser">复制淘口令</template>
-          <template v-else>领取优惠券</template>
+            <template>复制淘口令</template>
+            <!--          <template v-if="$bus.isWeixinBrowser">复制淘口令</template>-->
+<!--          <template v-else>领取优惠券</template>-->
         </div>
       </template>
       <template v-else>

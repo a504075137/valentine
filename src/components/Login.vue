@@ -10,15 +10,15 @@
       <div class="submit" @click="login">登录</div>
     </section>
     <section class="content regist" v-else>
-      <input type="text" v-input placeholder="请输入您的昵称.." v-model="register.name" />
+<!--      <input type="text" v-input placeholder="请输入您的昵称.." v-model="register.name" />-->
       <input type="text" v-input placeholder="请输入您的手机号.." v-model="register.phone" />
       <div class="sms">
         <input type="text" v-input placeholder="请输入手机验证码.." v-model="register.code" />
         <div class="sms-btn btn-text" @click="sendSms">{{ sending ? secondNum : "获取验证码" }}</div>
       </div>
 
-      <input type="text" v-input placeholder="请输入密码.." v-model="register.password" />
-      <input type="text" v-input placeholder="请再次输入密码.." v-model="register.repasswd" />
+      <input type="text" v-input placeholder="请输入密码（8-16位）.." v-model="register.password" />
+<!--      <input type="text" v-input placeholder="请再次输入密码.." v-model="register.repasswd" />-->
       <div class="submit" @click="sendRegister">立即注册</div>
     </section>
 
@@ -26,6 +26,7 @@
       <div class="desc">还没有账号？</div>
       <a href="#">立即注册</a>
     </div>
+    <div class="login-logo"></div>
     <footer v-show="false">
       登录即代表您同意
       <span>《飞智用户协议》</span>
@@ -161,11 +162,12 @@ export default {
                 registFlag = true;
                 const result = await this.$api.register({  code: this.register.code,
                     mobile: this.register.phone,
-                    password: this.register.password,
-                    username: this.register.name});
+                    password: this.register.password
+                    // , username: this.register.name
+                });
                 switch(result.err){
                 case 0:
-                    this.injectJwt(result.jwt);
+                    this.$api.injectJwt(result.jwt);
                     this.$storage.save('jwt', result.jwt);
                     this.$bus.isLogin = true;
                     await this.$api.boot({activityId:this.$bus.activityId});
@@ -197,17 +199,21 @@ export default {
             let err = "";
             if (!this.register.phone) {
                 err = "请填写手机号";
-            } else if (!this.register.name) {
-                err = "请填写昵称";
-            } else if (!this.register.code) {
+            }
+            // else if (!this.register.name) {
+            //     err = "请填写昵称";
+            // }
+            else if (!this.register.code) {
                 err = "请填写验证码";
             } else if (!this.register.password) {
                 err = "请填写密码";
-            } else if (!this.register.repasswd) {
-                err = "请填写再次输入密码";
-            } else if (this.register.repasswd !== this.register.password) {
-                err = "两次密码不一致";
             }
+            // else if (!this.register.repasswd) {
+            //     err = "请填写再次输入密码";
+            // }
+            // else if (this.register.repasswd !== this.register.password) {
+            //     err = "两次密码不一致";
+            // }
             err && this.$toast({ message: err });
             return !err;
         },
@@ -239,11 +245,12 @@ export default {
     }
   }
   > .content {
+      z-index:2;
     .wh(6.53rem, 4.56rem);
     .bg-cover("login_board.png");
     margin: 1rem auto 0;
     &.regist {
-      .wh(6.53rem, 8.5rem);
+      .wh(6.53rem, 6.53rem);
       .bg-cover("regist_board.png");
     }
     .flex-column(flex-start, center);
@@ -294,7 +301,7 @@ export default {
     }
   }
   > .register {
-    margin: 0.1rem auto 0;
+    margin: 0.66rem auto 0;
     text-align: center;
     font-size: 0.24rem;
     font-weight: normal;
@@ -329,5 +336,13 @@ export default {
       color: #ffffff;
     }
   }
+    > .login-logo{
+        width: 4.12rem;
+        height: .83rem;
+        .center-row();
+        bottom: 0.57rem;
+        .bg-contain("login_logo.png");
+        z-index :1;
+    }
 }
 </style>

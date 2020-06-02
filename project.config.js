@@ -1,6 +1,6 @@
 module.exports = {
     projectName: "project_fz_yydbz", // 项目名
-    title: "飞智618新品上新", // 网页标题
+    title: "飞智618签到活动", // 网页标题
     storagePrefix: "project_fz_yydbz", // localstorage的key前缀，用于项目的区分，避免同域名下的不同项目混淆了
     outputToSvn: false, // 是否输出到svn地址
     svnDir: {

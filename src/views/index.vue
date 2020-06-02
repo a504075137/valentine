@@ -85,21 +85,22 @@ export default {
             return list;
         },
         async preLogin() {
+            const token = window.$query.token;
+            const uid = window.$query.uid;
+            const source = window.$query.source;
             let jwt = this.$storage.load("jwt");
-            if(!jwt){
-                // 从接口地址中，看看有没有JWT
-                const token = window.$query.token;
-                const uid = window.$query.uid;
-                if(token && uid){
-                    // 说明从链接中带入了参数
-                    const result = await this.$api.preLogin({uid});
-                    console.log("接口返回结果："+result);
-                    try{
-                        this.$storage.save('jwt', result);
-                    }catch(e){
-                        console.log(e);
-                    }
-
+            console.log(source,token,uid);
+            if(source!=""&&token==""&&uid==""){
+                // 说明从APP进入，且没有带身份，需要手动退出登录
+                this.$storage.delete("jwt");
+            }else if(source!=""&&token&&uid&&!jwt){
+                // 从APP进入 且外面带了身份 里面还没有手动登录
+                const result = await this.$api.preLogin({uid});
+                console.log("接口返回结果："+result);
+                try{
+                    this.$storage.save('jwt', result);
+                }catch(e){
+                    console.log(e);
                 }
             }
         },

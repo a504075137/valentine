@@ -45,6 +45,8 @@ import Banner from '@c/Banner';
 import Rule from '@c/Rule';
 import Login from '@c/Login';
 import Getgift from '@c/Getgift';
+import jwtDecode from 'jwt-decode';
+
 export default {
     name: "home",
     meta: {
@@ -82,6 +84,14 @@ export default {
     },
     methods:{
         init(){
+            const jwt = this.$storage.load("jwt");
+            let uid = -1;
+            if(jwt){
+                uid = jwtDecode(jwt).data.uid;
+            }
+            console.log("用户ID",uid);
+            window.webfunny && webfunny.wmInitUser(uid, "1.0.0"); // 统计代码
+
             // if(!this.$bus.isLogin) return;
             this.signDay = this.$bus.signInfo.markList.length;
             this.continueDay = this.$bus.signInfo.markList.length >0 ? this.$bus.signInfo.markList[0].continueDays:0;

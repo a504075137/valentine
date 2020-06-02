@@ -8,6 +8,7 @@ import {
     auth
 } from './axios';
 import config from './config';
+const source = window.$query.source;
 
 class Api {
     async getServerTime() {
@@ -19,7 +20,7 @@ class Api {
     }
     async login(params) {
         return new Promise(async (resolve, reject) => {
-            let res = await post('/login/feizhi/login', { country_code: "86", isuid: "2", ...params });
+            let res = await post('/login/feizhi/login', { country_code: "86", isuid: "2", source, ...params });
             console.log(res);
             try {
                 if (res.jwt) {
@@ -45,10 +46,10 @@ class Api {
         return auth.get('/mark/userBoot', params);
     }
     preLogin(params) { // 获取活动配置
-        return get('/login/feizhi/pre', params);
+        return get('/login/feizhi/pre', { ...params, source });
     }
     getActivity(params) { // 获取活动配置
-        return get('/mark/boot', params);
+        return get('/mark/boot', { ...params, source });
     }
     mark(params) { // 签到
         return auth.post('/mark', params);
@@ -60,10 +61,10 @@ class Api {
         return auth.post('/mark/form', params);
     }
     sendCode(params) {
-        return post('/login/feizhi/code', { country_code: 86, ...params });
+        return post('/login/feizhi/code', { country_code: 86, ...params, source });
     }
     register(params) {
-        return post('/login/feizhi/register', params);
+        return post('/login/feizhi/register', { ...params, source });
     }
     // login(params) {
     //     return auth.post('/login/feizhi/login', params);

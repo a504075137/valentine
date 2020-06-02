@@ -100,15 +100,16 @@ const encryptPost = (url = '', params = {}, headers = {}) => {
 /**
  * 带有jwt权限的请求
  */
+const source = window.$query.source;
 const auth = {
     get: (url = '', params = {}, headers = {}) => {
-        return get(url, params, {
+        return get(url, { ...params, source }, {
             ...headers,
             ...config.authHeader
         });
     },
     post: (url = '', params = {}, headers = {}) => {
-        return post(url, params, {
+        return post(url, { ...params, source }, {
             ...headers,
             ...config.authHeader
         });

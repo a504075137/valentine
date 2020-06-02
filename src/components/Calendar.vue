@@ -6,7 +6,7 @@
       <div class="next-month" :style="{opacity:hasNext?1:0}" @click="handleNext"></div>
     </div>
     <div class="date-content">
-      <div class="week-header">
+      <!-- <div class="week-header">
         <div>日</div>
         <div>一</div>
         <div>二</div>
@@ -14,14 +14,13 @@
         <div>四</div>
         <div>五</div>
         <div>六</div>
-      </div>
+      </div>-->
       <div class="week-day">
-        <div class="border"></div>
         <div class="box">
           <div class="every-day" v-for="(item,index) in 42" :key="index">
-            <!-- <div v-if="item - beginDay <=0" class="other-day">{{item - beginDay + prevDays}}</div> -->
+            <div v-if="item - beginDay <=0" class="other-day">{{item - beginDay + prevDays}}</div>
             <div
-              v-if="item-beginDay >0 && item-beginDay <= curDays"
+              v-else-if="item-beginDay >0 && item-beginDay <= curDays"
               @click="handleChoose(item - beginDay)"
               :class="{
               'now-day':`${year}-${month}-${item-beginDay}` === curDate,
@@ -39,8 +38,22 @@
                 ></div>
               </div>
             </div>
-            <!-- <div v-else class="other-day">{{item - curDays - beginDay}}</div> -->
+            <div v-else class="other-day">{{item - curDays - beginDay}}</div>
           </div>
+        </div>
+      </div>
+
+      <div class="sign">
+        <div class="text">
+          累计签到
+          <span>{{$bus.signDay}}</span>
+          天
+        </div>
+        <span>|</span>
+        <div class="text">
+          连续签到
+          <span>{{$bus.continueDay}}</span>
+          天
         </div>
       </div>
     </div>
@@ -282,15 +295,19 @@ export default {
 <style lang="less">
 .calendar {
   width: 100%;
+  .wh(6.98rem, 6.24rem);
+  .flex-column();
+  .bg-contain("calendar_bg.png");
   font-size: 0.35rem;
 
   > .date-header {
     width: 80vw;
-    .flex(space-between, center);
+    height: 0.94rem;
+    .flex(center, center);
     margin: 0 auto 0.4rem;
     > .prev-month,
     > .next-month {
-      .wh(0.48rem);
+      .wh(0.17rem, 0.26rem);
     }
     > .prev-month {
       .bg-contain("left.png");
@@ -300,8 +317,8 @@ export default {
       .bg-contain("right.png");
     }
     > .show-date {
-      .wh(4.68rem, 0.44rem);
-      .bg-cover("date_bg.png");
+      .wh(4.08rem, 0.44rem);
+      // .bg-cover("date_bg.png");
       text-align: center;
       font-size: 0.39rem;
       font-weight: bold;
@@ -312,8 +329,10 @@ export default {
     }
   }
   > .date-content {
-    .bg-contain("calendar_border.png");
-    .wh(6.63rem, 5.34rem);
+    .p-r();
+    // .bg-contain("calendar_border.png");
+    width: 100%;
+    flex: 1;
     .flex-column(flex-start, center);
     margin: 0 auto;
     overflow: hidden;
@@ -333,7 +352,7 @@ export default {
     }
 
     > .week-day {
-      .wh(5.83rem, 4.42rem);
+      .wh(100%, 4.42rem);
       box-sizing: border-box;
       // flex: 1;
       background-color: #ffffff;
@@ -406,39 +425,103 @@ export default {
                   opacity: 1;
                 }
                 > .gift-icon {
-                  position: static;
-                  margin: 0 auto;
+                  .p-a();
+                  top: 0;
+                  right: 0;
                   transform: translate3d(0, 0, 0);
-                  .wh(0.22rem, 0.19rem);
+                  .wh(0.26rem, 0.23rem);
                   .bg-contain("has_gift.png");
                 }
               }
             }
           }
-          > .activity-day:not(.has-day) {
+          > .activity-day {
             > .date-num {
-              > .gift-icon {
+              > span {
+                display: block;
                 margin: 0 auto;
-                .wh(0.18rem, 0.14rem);
+                .wh(0.64rem);
+                line-height: 0.64rem;
+                border-radius: 50%;
+                background-color: #efefef;
+              }
+              > .gift-icon {
+                // margin: 0 auto;
+                .p-a();
+                top: 0.05rem;
+                right: 0.1rem;
+                .wh(0.2rem);
                 .bg-contain("no-sign.png");
               }
               // display: none;
+            }
+            &.has-day {
+              > .date-num {
+                > .gift-icon {
+                  .bg-contain("sign.png");
+                }
+              }
             }
             // }
           }
           > .now-day {
             // .bg-contain("now-day.png");
             // background-position: center 0.025rem;
+            // > .date-num {
+            //   > span {
+            //     // .wh(0.68rem, 0.53rem);
+            //     // line-height: 0.53rem;
+            //     // .bg-contain("now-day.png");
+            //     display: inline-block;
+            //     opacity: 1;
+            //   }
+            // }
             > .date-num {
               > span {
-                .wh(0.68rem, 0.53rem);
-                line-height: 0.53rem;
-                .bg-contain("now-day.png");
-                display: inline-block;
-                opacity: 1;
+                display: block;
+                margin: 0 auto;
+                .wh(0.64rem);
+                line-height: 0.64rem;
+                border-radius: 50%;
+                background-color: #efefef;
               }
+              > .gift-icon {
+                // margin: 0 auto;
+                .p-a();
+                top: 0.05rem;
+                right: 0.1rem;
+                .wh(0.2rem);
+                .bg-contain("no-sign.png");
+              }
+              // display: none;
             }
           }
+        }
+      }
+    }
+    > .sign {
+      .p-a();
+      bottom: 0;
+      .wh(90%, 1rem);
+      .flex(space-around, center);
+      font-size: 0.25rem;
+      font-weight: normal;
+      font-stretch: normal;
+      letter-spacing: 0.01rem;
+      color: #575757;
+      background-color: #ffffff;
+      > span {
+        .wh(0.02rem, 0.21rem);
+        display: block;
+        background-color: #dbdbdb;
+      }
+      > .text {
+        > span {
+          font-size: 0.29rem;
+          font-weight: bold;
+          font-stretch: normal;
+          letter-spacing: 0.02rem;
+          color: #295bff;
         }
       }
     }

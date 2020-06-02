@@ -18,19 +18,7 @@
     </transition>
 
     <Banner />
-    <div class="sign">
-      <div class="text">
-        累计签到
-        <span>{{signDay}}</span>
-        天
-      </div>
-      <span>|</span>
-      <div class="text">
-        连续签到
-        <span>{{continueDay}}</span>
-        天
-      </div>
-    </div>
+
     <!-- <div class="test">{{query}}</div> -->
     <Calendar class="calendar" :giftDays="giftDays" />
     <div class="btn" @click="mark" v-if="!$bus.hasToday"></div>
@@ -93,8 +81,8 @@ export default {
             window.webfunny && webfunny.wmInitUser(uid, "1.0.0"); // 统计代码
 
             // if(!this.$bus.isLogin) return;
-            this.signDay = this.$bus.signInfo.markList.length;
-            this.continueDay = this.$bus.signInfo.markList.length >0 ? this.$bus.signInfo.markList[0].continueDays:0;
+            this.$bus.signDay = this.$bus.signInfo.markList.length;
+            this.$bus.continueDay = this.$bus.signInfo.markList.length >0 ? this.$bus.signInfo.markList[0].continueDays:0;
             this.getGiftDate();
             this.judgeShare();
             this.$bus.$on("goRule",()=>{

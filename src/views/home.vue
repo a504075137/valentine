@@ -87,7 +87,7 @@ export default {
             const jwt = this.$storage.load("jwt");
             let uid = -1;
             if(jwt){
-                uid = jwtDecode(jwt).uid;
+                uid = jwtDecode(jwt).data.uid;
             }
             console.log("用户ID",uid);
             window.webfunny && webfunny.wmInitUser(uid, "1.0.0"); // 统计代码

@@ -40,6 +40,10 @@ class Storage {
         }
         return value;
     }
+
+    delete(key){
+        window.localStorage.removeItem(this.generateKey(key));
+    }
 }
 
 Vue.$storage = Vue.prototype.$storage = new Storage(process.env.VUE_APP_STORAGE_PREFIX);

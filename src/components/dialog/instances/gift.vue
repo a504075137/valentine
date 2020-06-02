@@ -54,6 +54,15 @@
         </div>
         <div class="btn" @click="recieve">{{btnText[type]}}</div>
       </div>
+      <div class="content" v-else-if="type === 'update'">
+            <div class="icon update-cls" :style="{backgroundImage:`url(${require(`@imgs/icon_update.png`)})`}"></div>
+            <div class="text">
+                当前APP版本过旧
+                <br />
+                立即升级最新版进行补签
+            </div>
+            <div class="btn" @click="$emit('close')">知道了</div>
+        </div>
       <div class="content display" v-else-if="type === 'display'">
         <div class="swiper-container taobaobanner">
           <div class="swiper-wrapper">
@@ -72,8 +81,8 @@
             </div>
           </div>
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev" v-show="giftInfo.length > 1"></div>
+        <div class="swiper-button-next" v-show="giftInfo.length > 1"></div>
         <!-- <div class="arrow" v-if="giftInfo.length > 1 && giftIndex < giftInfo.length-1"></div>
         <div
           class="arrow left"
@@ -153,13 +162,17 @@ export default {
                 this.recieveGetGift();
 
             }else if(this.type === 'taobao' || this.type === 'display'){
-                if(this.$bus.isWeixinBrowser){
-                    console.log("复制");
-                }else{
-                    // console.log(1111,this.giftInfo);
-                    const link = this.giftInfo.taobaoAppUrl || this.giftInfo[this.giftIndex].taobaoAppUrl;
-                    window.location.replace(link);
-                }
+                // APP 微信 都是复制操作
+                // if(this.$bus.isWeixinBrowser){
+                //     console.log("复制");
+                // }else{
+                //     // TODO 这里会有BUG
+                //     console.log(1111,this.giftInfo);
+                //     // const link = this.giftInfo.taobaoAppUrl || this.giftInfo[this.giftIndex].taobaoAppUrl;
+                //     const link = this.giftInfo[this.giftInfo.length-1].taobaoKey;
+                //     console.log(link,this.giftIndex,this.giftInfo.length-1);
+                //     window.location.replace(link);
+                // }
 
             }else if(this.type === 'sign-success'){
                 this.$emit('close');
@@ -190,15 +203,16 @@ export default {
             this.giftIndex = 0;
             this.initBanner();
 
-            if((this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
-
+            // if((this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
+            if((this.type !== 'taobao' && this.type!=='display')) return;
             const clipboard = new ClipboardJS(".taobaobtn");
             const _this = this;
             clipboard.on("success", this.copy);
             clipFlag = true;
         },
         copy(e){
-            if( (this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
+            // if( (this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
+            if( (this.type !== 'taobao' && this.type!=='display')) return;
             this.$toast({ message: "淘口令复制成功" });
             e.clearSelection();
         },
@@ -327,6 +341,9 @@ export default {
         .wh(2.13rem, 1.79rem);
         .contain();
       }
+        > .update-cls{
+            .wh(1.6rem, 1.6rem);
+        }
       > .text {
         text-align: center;
         font-size: 0.32rem;

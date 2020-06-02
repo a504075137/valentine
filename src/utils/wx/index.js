@@ -20,6 +20,14 @@ class WxSdk {
         Object.assign(this.__proto__, wx);
     }
 
+    isWx(){
+        // return false;
+        if(!isPro || isWeixinBrowser()){
+            return true;
+        }
+        return false;
+    }
+
     getWxConfig() {
         if (!isPro || !isWeixinBrowser()) {
             console.warn('非微信浏览器，且非production，不能调用该接口: getWxConfig');

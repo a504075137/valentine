@@ -63,16 +63,16 @@ export default {
                 el: '.swiper-pagination',
             },
             autoplay: true,
-    
-        });     
+
+        });
     }
 };
 </script>
 
 <style lang="less">
 .ban-wrapper {
-  .wh(7.05rem, 2.41rem);
-  margin: 0.37rem auto 0;
+    .wh(6.98rem, 2.74rem);
+  margin: 0.12rem auto 0;
   @media @wide {
     margin-top: 0.1rem;
   }
@@ -82,8 +82,9 @@ export default {
     > .swiper-container.banner {
       .swiper-slide {
         .banner-img {
-          .wh(7.05rem, 2.41rem);
-          .bg-contain("banner_1.png");
+            border-radius: .15rem;
+            .wh(6.98rem, 2.74rem);
+          .bg-cover("banner_1.png");
         }
       }
       > .swiper-pagination {

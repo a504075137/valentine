@@ -49,7 +49,7 @@
         <div :class="['btn',{'active':index === 1} ]" @click="index = 1" v-show="this.giftList.length>0">我的奖品</div>
       </template>
       <template v-else>
-        <div class="btn" @click="submit">提交信息</div>
+        <div class="btn" @click="submit">提交 信息</div>
       </template>
     </footer>
   </div>

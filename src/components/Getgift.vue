@@ -17,7 +17,7 @@
     </div>
 
     <footer>
-      <div class="btn" @click="submit">提交信息</div>
+      <div class="btn" @click="submit">{{btnText}}</div>
     </footer>
   </div>
 </template>
@@ -36,7 +36,8 @@ export default {
                 name:'',
                 phone:'',
                 address:''
-            }
+            },
+            btnText: "更新信息"
         };
     },
     created () {
@@ -48,6 +49,7 @@ export default {
         init(){
             console.log(this.gift);
             Object.assign(this.giftParams,{name:this.name,phone:this.phone,address:this.address});
+            if(!this.name && !this.phone && !this.address) this.btnText = "提交信息";
         },
         close(){
             this.$emit("close");

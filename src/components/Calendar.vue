@@ -105,8 +105,16 @@ export default {
 
                 }
             }else{ // 补签
-                if(reMarkDay < this.$bus.signInfo.config.reMarkTimes){
-                    this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
+                // console.log("点击了补签按钮");
+                if(!this.$wxsdk.isWx() && !window.$query.source){
+                    // 说明是非微信 非最新版本飞智APP环境 需要弹窗提示去更新
+                    this.$dialog.show("gift",{vBind:{type:'update'}});
+                }else{
+                    if(reMarkDay < this.$bus.signInfo.config.reMarkTimes){
+                        this.$dialog.show("gift",{vBind:{type:'remark',date:chooseDay}});
+                    }else{
+                        this.$toast({message:"很抱歉，您的补签次数已用完"});
+                    }
                 }
             }
         },
@@ -139,7 +147,7 @@ export default {
             this.list = this.$bus.signInfo.markList.map(item=>{
                 const date = item.createAt.split(" ")[0];
                 if(item.isReMark) reMarkDay+=1;
-                if(dayjs(date).format('YYYY-MM-DD') == dayjs().format('YYYY-MM-DD')) markListFlag = true; 
+                if(dayjs(date).format('YYYY-MM-DD') == dayjs().format('YYYY-MM-DD')) markListFlag = true;
                 return date;
             });
             this.$bus.hasToday = markListFlag;
@@ -147,7 +155,7 @@ export default {
             this.setUserGiftList();
         },
         setGiftDay(markListFlag){
-            
+
 
             const hasMark = markListFlag? this.$bus.signInfo.markList.length:this.$bus.signInfo.markList.length +1;
             const list = this.giftDays.sort((a,b)=>{
@@ -194,9 +202,9 @@ export default {
                     if(item.date === time){
                         flag = true;
                         itemInfo.push(item);
-                       
+
                         shake = shakeDay === item.date?true:false;
-                    } 
+                    }
                 });
                 return {flag,itemInfo,shake};
                 // return list.includes(time);
@@ -208,7 +216,7 @@ export default {
                 let itemInfo = [];
                 this.userGiftList.forEach(item=>{
                     if(item.date === time){
-                        flag = true; 
+                        flag = true;
                         itemInfo.push(item);
                     }
                 });
@@ -225,7 +233,7 @@ export default {
             return (item)=>{
                 return `${this.year}-${this.month >=10?this.month:'0'+this.month}-${(item-this.beginDay) >=10?item-this.beginDay:'0'+(item-this.beginDay)}`;
             };
-            
+
         },
         hasPrev(){ // 判断前一个月是否有活动
             let year=this.year , month=this.month;
@@ -266,7 +274,7 @@ export default {
         }
     },
     mounted(){
-        
+
     },
 };
 </script>

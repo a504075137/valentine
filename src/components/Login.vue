@@ -10,7 +10,7 @@
       <div class="submit" @click="login">登录</div>
     </section>
     <section class="content regist" v-else>
-<!--      <input type="text" v-input placeholder="请输入您的昵称.." v-model="register.name" />-->
+      <!--      <input type="text" v-input placeholder="请输入您的昵称.." v-model="register.name" />-->
       <input type="text" v-input placeholder="请输入您的手机号.." v-model="register.phone" />
       <div class="sms">
         <input type="text" v-input placeholder="请输入手机验证码.." v-model="register.code" />
@@ -18,7 +18,7 @@
       </div>
 
       <input type="text" v-input placeholder="请输入密码（8-16位）.." v-model="register.password" />
-<!--      <input type="text" v-input placeholder="请再次输入密码.." v-model="register.repasswd" />-->
+      <!--      <input type="text" v-input placeholder="请再次输入密码.." v-model="register.repasswd" />-->
       <div class="submit" @click="sendRegister">立即注册</div>
     </section>
 
@@ -75,6 +75,17 @@ export default {
                     this.$loading.show();
                     const result = await this.$api.login(obj);
                     this.$bus.isLogin = true;
+                    if(this.$bus.loginStatus === 'mark'){
+                        await this.$parent.mark();
+                        this.$emit("close");
+                        return;
+                    }else if(this.$storage.load('loginStatus')){
+                        await this.$parent.reMark(this.$storage.load('loginStatus'));
+                        this.$storage.save('loginStatus','');
+                        await this.$api.boot({activityId:this.$bus.activityId});
+                        this.$emit("close");
+                        return;
+                    }
                     await this.$api.boot({activityId:this.$bus.activityId});
                     this.$toast('登录成功');
                     this.$loading.hide();
@@ -170,6 +181,17 @@ export default {
                     this.$api.injectJwt(result.jwt);
                     this.$storage.save('jwt', result.jwt);
                     this.$bus.isLogin = true;
+                    if(this.$bus.loginStatus === 'mark'){
+                        await this.$parent.mark();
+                        this.$emit("close");
+                        return;
+                    }else if(this.$storage.load('loginStatus')){
+                        await this.$parent.reMark(this.$storage.load('loginStatus'));
+                        this.$storage.save('loginStatus','');
+                        await this.$api.boot({activityId:this.$bus.activityId});
+                        this.$emit("close");
+                        return;
+                    }
                     await this.$api.boot({activityId:this.$bus.activityId});
                     this.$toast('注册成功');
                     // this.$router.replace("home");
@@ -245,7 +267,7 @@ export default {
     }
   }
   > .content {
-      z-index:2;
+    z-index: 2;
     .wh(6.53rem, 4.56rem);
     .bg-cover("login_board.png");
     margin: 1rem auto 0;
@@ -336,13 +358,13 @@ export default {
       color: #ffffff;
     }
   }
-    > .login-logo{
-        width: 4.12rem;
-        height: .83rem;
-        .center-row();
-        bottom: 0.57rem;
-        .bg-contain("login_logo.png");
-        z-index :1;
-    }
+  > .login-logo {
+    width: 4.12rem;
+    height: 0.83rem;
+    .center-row();
+    bottom: 0.57rem;
+    .bg-contain("login_logo.png");
+    z-index: 1;
+  }
 }
 </style>

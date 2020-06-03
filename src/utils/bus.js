@@ -39,6 +39,7 @@ const bus = new Vue({
             rulePage: null,
             signDay: 0,
             continueDay: 0,
+            loginStatus: ''
         };
     },
     created() {

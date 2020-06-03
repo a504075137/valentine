@@ -1,7 +1,28 @@
 <template>
   <div class="wrapper">
     <div class="header">
-      <div class="pic" :style="{backgroundImage:`url(${giftInfo.giftImg})`}"></div>
+      <!-- giftName -->
+      <div
+        class="pic rectangle"
+        v-if="giftInfo.giftName === '5元优惠券'"
+        :style="{backgroundImage:`url(${require(`@imgs/5.png`)})`}"
+      ></div>
+      <div
+        class="pic rectangle"
+        v-else-if="giftInfo.giftName.includes('15')"
+        :style="{backgroundImage:`url(${require(`@imgs/15.png`)})`}"
+      ></div>
+      <div
+        class="pic rectangle"
+        v-else-if="giftInfo.giftName.includes('20')"
+        :style="{backgroundImage:`url(${require(`@imgs/20.png`)})`}"
+      ></div>
+      <div
+        class="pic rectangle"
+        v-else-if="giftInfo.giftName.includes('30')"
+        :style="{backgroundImage:`url(${require(`@imgs/30.png`)})`}"
+      ></div>
+      <div class="pic" v-else :style="{backgroundImage:`url(${giftInfo.giftImg})`}"></div>
       <div class="content">
         <div class="name">{{giftInfo.giftName}}</div>
         <div class="desc">{{giftInfo.giftDescription}}</div>
@@ -48,6 +69,9 @@ export default {
       // background-color: #ffffff;
       opacity: 0.73;
       border-radius: 50%;
+      &.rectangle {
+        border-radius: 0;
+      }
       //   margin-left: 0.4rem;
     }
     > .content {

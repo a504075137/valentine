@@ -111,6 +111,7 @@ export default {
         async mark(){
             if(!this.$bus.isLogin){
                 this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                this.$bus.loginStatus = 'mark';
                 return;
             }
             this.$loading.show();

@@ -393,8 +393,8 @@ export default {
               }
             }
           }
-          > .gift-day,
-          > .has-gift {
+          > .gift-day:not(.now-day),
+          > .has-gift:not(.now-day) {
             > .date-num {
               .p-r();
               > span {
@@ -495,6 +495,17 @@ export default {
               }
               // display: none;
             }
+            &.has-gift,
+            &.gift-day {
+              > .date-num {
+                > .gift-icon {
+                  .bg-contain("gift_icon.png");
+                  &.shake {
+                    animation: small-to-big1 1s infinite linear alternate;
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -533,6 +544,14 @@ export default {
   }
   to {
     transform: translate3d(-50%, -50%, 0) scale(1.2);
+  }
+}
+@keyframes small-to-big1 {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1.2);
   }
 }
 </style>

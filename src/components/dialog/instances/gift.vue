@@ -55,14 +55,16 @@
         <div class="btn" @click="recieve">{{btnText[type]}}</div>
       </div>
       <div class="content" v-else-if="type === 'update'">
-            <div class="icon update-cls" :style="{backgroundImage:`url(${require(`@imgs/icon_update.png`)})`}"></div>
-            <div class="text">
-                当前APP版本过旧
-                <br />
-                立即升级最新版进行补签
-            </div>
-            <div class="btn" @click="$emit('close')">知道了</div>
+        <div
+          class="icon update-cls"
+          :style="{backgroundImage:`url(${require(`@imgs/icon_update.png`)})`}"
+        ></div>
+        <div class="text">
+          当前APP版本过旧
+          <br />立即升级最新版进行补签
         </div>
+        <div class="btn" @click="$emit('close')">知道了</div>
+      </div>
       <div class="content display" v-else-if="type === 'display'">
         <div class="swiper-container taobaobanner">
           <div class="swiper-wrapper">
@@ -148,6 +150,8 @@ export default {
     methods:{
         async recieve(){
             if(this.type === 'remark'){
+                this.$storage.save('loginStatus',this.date);
+                // console.log(11111,this.date,this.$storage.load('loginStatus'));
                 if(!this.$bus.isWeixinBrowser){
                     // console.log(11,this.date);
                     this.$dialog.show("Share");
@@ -341,9 +345,9 @@ export default {
         .wh(2.13rem, 1.79rem);
         .contain();
       }
-        > .update-cls{
-            .wh(1.6rem, 1.6rem);
-        }
+      > .update-cls {
+        .wh(1.6rem, 1.6rem);
+      }
       > .text {
         text-align: center;
         font-size: 0.32rem;

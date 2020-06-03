@@ -8,6 +8,6 @@ module.exports = {
         CodeBear: '/Users/codebear/codebear/24/dingzhi/project-template/game/'
     },
     cdnUrl: '//res.cdn.24haowan.com/dingzhi/project-template/game/', // cdn地址
-    baiduUrl: '',// 百度统计链接
+    baiduUrl: 'https://hm.baidu.com/hm.js?cdc5782806cf0805c8a4ffa73c4dd923',// 百度统计链接
     forceHttps: false
 };

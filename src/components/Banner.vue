@@ -23,9 +23,9 @@
               :style="{backgroundImage:`url(${require(`@imgs/banner_2.png`)})`}"
             ></div>
           </div>
-          <div class="swiper-slide">
-            <div class="banner-img"></div>
-          </div>
+<!--          <div class="swiper-slide">-->
+<!--            <div class="banner-img"></div>-->
+<!--          </div>-->
         </div>
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination"></div>

@@ -340,7 +340,8 @@ export default {
         width: 4.12rem;
         height: .83rem;
         .center-row();
-        bottom: 0.57rem;
+        /*bottom: 0.57rem;*/
+        top: 10rem;
         .bg-contain("login_logo.png");
         z-index :1;
     }

@@ -172,7 +172,11 @@ export default {
         },
         async reMark(markDate){
             if(!this.$bus.isLogin){
-                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                this.$emit('close');
+                setTimeout(()=>{
+                    this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+                },600);
+
                 return;
             }
             this.$loading.show();
@@ -189,54 +193,29 @@ export default {
                 this.$emit('close');
                 return;
             }
-
-            if(result.code === '1009'){
-                this.$toast('活动未发布');
-                this.$loading.hide();
-                this.$emit('close');
-                return;
-            }
             if(result.code === '1012'){
                 this.$toast('补签日期不在活动期间');
                 this.$loading.hide();
                 return;
             }
-
-            const {sendGiftList} = result;
-            const hasList = this.$bus.signInfo.giftConfigList.filter((item)=>{
-                return item.days === 1;
-            });
-            if(sendGiftList.length !== hasList.length){
-                const noneGift = hasList.filter(item=>{
-                    let flag = true;
-                    sendGiftList.forEach(oitem=>{
-                        if(oitem.id === item.id){
-                            flag = false;
-                        }
-                    });
-                    return flag;
-                });
-                noneGift.map(item=>{
-                    item.none= true;
-                    return item;
-                });
-                this.$loading.hide();
-
-                console.log("没礼物",noneGift);
-                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,giftInfo:[...sendGiftList,...noneGift]}});
-                return;
-            }
             if(result.sendGiftList.length>0){
                 // const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
                 await this.$api.boot({activityId:this.$bus.activityId});
-                this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,cantGain:false,giftInfo:result.sendGiftList}});
+                setTimeout(()=>{
+                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,cantGain:false,giftInfo:result.sendGiftList}});
+                },1000);
                 this.$loading.hide();
+                this.$emit('close');
                 return;
             }
             await this.$api.boot({activityId:this.$bus.activityId});
             this.$loading.hide();
+            this.$emit('close');
+            this.$bus.$off("wx-share",this.reMark);
             // this.$toast({message:"补签成功"});
-            this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+            setTimeout(()=>{
+                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
+            },1000);
         },
     },
     watch:{

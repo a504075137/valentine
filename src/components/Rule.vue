@@ -8,17 +8,26 @@
     </header>
     <div class="content" v-if="index === 0">
       <div class="title">活动时间</div>
-      <div class="cont">即日起至 2020月6月18日</div>
+      <div class="cont">2020年6月5日 至 2020年6月20日</div>
       <div class="title">活动方式</div>
-      <div class="cont">登录飞智APP，进入指定活动页面即可参与抽奖活动，有机会赢取淘宝优惠券，大奖低至1折；</div>
-      <div class="title">活动规则</div>
+      <div class="cont">活动期间，通过飞智游戏厅App-社区，或飞智游戏厅微信公众号访问活动页面签到，达到累计天数后就可获得优惠券和飞智蜂套2</div>
+      <div class="title">奖品规则</div>
       <div class="cont">
-        1.每位用户每天进入活动页，即可获得一次抽奖机会，完成指定任务可获得额外的抽奖机会，单日最多可抽奖2次 ；
-        2.折扣券有效期及使用范围以所获得的奖品为准，请尽快在有效期内使用；
-        3.折扣券均为原价基础上折扣，与特价商品不可叠加享受优惠；
-        4.折扣券不可转让、不可折现，仅可本人使用；
-        5.该活动的奖励与 Apple Inc. 无关；
+          1、累计签到 3 天，奖励 无门槛 5 元优惠券
+          <br>
+          2、累计签到 5 天，奖励 199-15 元优惠券
+          <br>
+          3、累计签到 10 天，奖励 199-20 元优惠券
+          <br>
+          4、累计签到 15 天，奖励 399-30 元优惠券+蜂套 2
+          <br>
+          5、蜂套 2 限量 2000 套，领完为止 ，同一用户最多获得一份蜂套 2（同一手机号或者同一地址的都会被视为同一用户）
+          <br>
       </div>
+        <div class="title">补签规则</div>
+        <div class="cont">
+            把活动页面分享到群聊或者朋友圈，可获得补签机会，活动期间最多可补签两次
+        </div>
       <div class="title">主办方</div>
       <div class="cont">飞智科技</div>
     </div>
@@ -235,6 +244,7 @@ export default {
       color: #ffffff;
     }
     > .cont {
+        text-align:justify;
       max-width: 6.29rem;
       margin-top: 0.4rem;
       margin-left: 0.59rem;

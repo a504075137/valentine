@@ -49,8 +49,8 @@
           <span>{{$bus.signDay}}</span>
           天
         </div>
-        <span>|</span>
-        <div class="text">
+        <span v-show="false">|</span>
+        <div class="text" v-show="false">
           连续签到
           <span>{{$bus.continueDay}}</span>
           天
@@ -295,9 +295,10 @@ export default {
 <style lang="less">
 .calendar {
   width: 100%;
-  .wh(6.98rem, 6.24rem);
+  .wh(6.98rem, 6.54rem);
   .flex-column();
   .bg-contain("calendar_bg.png");
+    background-position-y: 0;
   font-size: 0.35rem;
 
   > .date-header {
@@ -372,6 +373,7 @@ export default {
           font-weight: bold;
           line-height: 0.6rem;
           text-align: center;
+            margin: 0.03rem auto;
 
           > .other-day {
             color: #ccc;
@@ -406,7 +408,7 @@ export default {
                 left: 50%;
                 transform: translate3d(-50%, -50%, 0);
                 .wh(0.43rem, 0.39rem);
-                .bg-contain("gift_icon.png");
+                .bg-contain("new_has_gift.png") !important;
                 &.shake {
                   animation: small-to-big 1s infinite linear alternate;
                 }
@@ -430,7 +432,7 @@ export default {
                   right: 0;
                   transform: translate3d(0, 0, 0);
                   .wh(0.26rem, 0.23rem);
-                  .bg-contain("has_gift.png");
+                  .bg-contain("new_gift_shake.png");
                 }
               }
             }
@@ -476,6 +478,13 @@ export default {
             //     opacity: 1;
             //   }
             // }
+              .shake{
+                  top: 50% !important;
+                  left: 50% !important;
+                  /*transform: translate3d(-50%, -50%, 0) !important;*/
+                  .wh(0.43rem, 0.39rem) !important;
+              }
+
             > .date-num {
               > span {
                 display: block;
@@ -491,7 +500,6 @@ export default {
                 top: 0.05rem;
                 right: 0.1rem;
                 .wh(0.2rem);
-                .bg-contain("no-sign.png");
               }
               // display: none;
             }
@@ -513,7 +521,7 @@ export default {
     > .sign {
       .p-a();
       bottom: 0;
-      .wh(90%, 1rem);
+      .wh(100%, 1.03rem);
       .flex(space-around, center);
       font-size: 0.25rem;
       font-weight: normal;
@@ -521,10 +529,12 @@ export default {
       letter-spacing: 0.01rem;
       color: #575757;
       background-color: #ffffff;
-      > span {
+        border-top: 1px solid #f7f9ff;
+
+
+        > span {
         .wh(0.02rem, 0.21rem);
         display: block;
-        background-color: #dbdbdb;
       }
       > .text {
         > span {

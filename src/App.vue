@@ -20,6 +20,15 @@ export default {
         // MusicBtn,
         DialogHandler,
         Loading
+    },
+    created () {
+        this.init();
+    },
+    methods:{
+        init(){
+
+            // console.log(window.vhref,window.vlo);
+        }
     }
 };
 </script>

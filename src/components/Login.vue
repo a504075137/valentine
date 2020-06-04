@@ -222,6 +222,7 @@ export default {
           case 0:
             this.$api.injectJwt(result.jwt);
             this.$storage.save("jwt", result.jwt);
+            this.$storage.save("login-handle", 1); // 代表APP内 手动登录过 这种情况 如果APP没有带参数 不应该重置登录态
             this.$bus.isLogin = true;
             if (this.$bus.loginStatus === "mark") {
               await this.$parent.mark();

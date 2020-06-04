@@ -49,6 +49,7 @@ const base64Encode = (str)=> {
 const getAllUrlQuery = ()=> {
     // 获取连接后面的参数，微信分享的链接可能会有编码问题，先decodeURI
     var list = window.location.search.replace('?', '').split('&');
+
     window._query = {};
     for (var i = 0;i < list.length;++i) {
         var q = list[i].split('=');
@@ -67,7 +68,36 @@ const getAllUrlQuery = ()=> {
         ...window._query,
         ...window._hquery
     }
-    return result;
+    console.log(result);
+
+    for(var key in result){
+        console.log(key);
+        if(result[key]&&result[key]!=""){
+            console.log(result[key])
+            Vue.$storage.save(key,result[key]);
+            window.localStorage.setItem(key,result[key]);
+        }
+    }
+
+    var len = window.localStorage.length;  // 获取长度
+    var newResult={};
+    var arr = new Array(); // 定义数据集
+    for(var i = 0; i < len; i++) {
+        // 获取key 索引从0开始
+        var getKey = window.localStorage.key(i);
+        console.log(getKey)
+        // 获取key对应的值
+        var getVal = window.localStorage.getItem(getKey);
+        try {
+            getVal = JSON.parse(getVal);
+        } catch(e) {
+            getVal = getVal;
+        }
+
+        // 放进数组
+        newResult[getKey] = getVal;
+    }
+    return newResult;
 };
 
 /**

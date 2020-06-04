@@ -90,8 +90,8 @@ export default {
             const source = window.$query.source;
             let jwt = this.$storage.load("jwt");
             console.log(source,token,uid);
-            if(source!=""&&token==""&&uid==""){
-                // 说明从APP进入，且没有带身份，需要手动退出登录
+            if(source!=""&&token==""&&uid==""&&!this.$storage.load("login-handle")){
+                // 说明从APP进入，且没有带身份，且不是APP通过H5手动登录的情况，需要手动退出登录
                 this.$storage.delete("jwt");
             }else if(source!=""&&token&&uid&&!jwt){
                 // 从APP进入 且外面带了身份 里面还没有手动登录
@@ -99,6 +99,7 @@ export default {
                 console.log("接口返回结果："+result);
                 try{
                     this.$storage.save('jwt', result);
+                    this.$storage.delete("login-handle");
                 }catch(e){
                     console.log(e);
                 }

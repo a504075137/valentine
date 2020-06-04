@@ -26,6 +26,7 @@ class Api {
                 if (res.jwt) {
                     this.injectJwt(res.jwt);
                     Vue.$storage.save('jwt', res.jwt);
+                    Vue.$storage.save('login-handle', 1); // 代表APP内 手动登录过 这种情况 如果APP没有带参数 不应该重置登录态
                     resolve(res);
                 } else {
                     // Vue.$toast('登录失败', 'error');

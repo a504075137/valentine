@@ -22,7 +22,11 @@
         v-else-if="giftInfo.giftName.includes('30')"
         :style="{backgroundImage:`url(${require(`@imgs/30.png`)})`}"
       ></div>
-      <div class="pic" v-else :style="{backgroundImage:`url(${giftInfo.giftImg})`}"></div>
+      <div
+        class="pic"
+        v-else
+        :style="{backgroundImage:`url(${giftInfo.giftImg})`}"
+      ></div>
       <div class="content">
         <div class="name">{{giftInfo.giftName}}</div>
         <div class="desc">{{giftInfo.giftDescription}}</div>
@@ -30,27 +34,27 @@
     </div>
     <div class="footer">
       <div class="time">{{giftInfo.createAt}}</div>
-      <div class="btn" @click="getGift"></div>
+      <div
+        class="btn"
+        @click="getGift"
+      >领取奖品</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-    props:['giftInfo'],
-    data(){
-        return {
-
-        };
-    },
-    methods:{
-        getGift(){
-            // this.$dialog.show("getGift");
-            this.$emit('getGift',this.giftInfo);
-        }
-    },
-    created(){
+  props: ["giftInfo"],
+  data() {
+    return {};
+  },
+  methods: {
+    getGift() {
+      // this.$dialog.show("getGift");
+      this.$emit("getGift", this.giftInfo);
     }
+  },
+  created() {}
 };
 </script>
 
@@ -59,9 +63,9 @@ export default {
   .wh(6.65rem, 2.93rem);
   .bg-cover("card.png");
   margin: 0.35rem auto 0;
-    &:first-child{
-        margin-top: .54rem;
-    }
+  &:first-child {
+    margin-top: 0.54rem;
+  }
 
   > .header {
     .wh(100%, 1.65rem);
@@ -94,7 +98,7 @@ export default {
         font-weight: normal;
         font-stretch: normal;
         letter-spacing: 1px;
-        color: #79a7e6;
+        color: #9e9e9e;
       }
     }
   }
@@ -106,11 +110,19 @@ export default {
       font-weight: bold;
       font-stretch: normal;
       letter-spacing: 2px;
-      color: #0099fa;
+      color: #ffffff;
     }
     > .btn {
-      .wh(2.72rem, 1.06rem);
-      .bg-contain("gift_btn.png");
+      .wh(2.34rem, 0.68rem);
+      text-align: center;
+      background-color: #ffffff;
+      box-shadow: 0px 7px 21px 0px rgba(0, 25, 78, 0.39);
+      font-size: 0.26rem;
+      font-weight: 700;
+      font-stretch: normal;
+      line-height: 0.68rem;
+      letter-spacing: 0.01rem;
+      color: #010101;
     }
   }
 }

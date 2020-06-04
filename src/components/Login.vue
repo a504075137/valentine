@@ -299,7 +299,7 @@ export default {
     font-stretch: normal;
     line-height: 1.18rem;
     letter-spacing: 0.08rem;
-    color: #4288ff;
+    color: #ffffff;
     > .back {
       .p-a();
       top: 0.4rem;

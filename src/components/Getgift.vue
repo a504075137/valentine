@@ -2,13 +2,34 @@
   <div class="page-rule">
     <header>
       <template>领奖信息</template>
-      <div class="close" @click="close"></div>
+      <div
+        class="close"
+        @click="close"
+      ></div>
     </header>
     <div class="content">
       <div class="bg">
-        <input v-input type="text" class="name" v-model="giftParams.name" placeholder="请输入姓名" />
-        <input v-input type="text" class="phone" v-model="giftParams.phone" placeholder="请输入电话" />
-        <input v-input type="text" class="address" v-model="giftParams.address" placeholder="请输入收货地址" />
+        <input
+          v-input
+          type="text"
+          class="name"
+          v-model="giftParams.name"
+          placeholder="请输入姓名"
+        />
+        <input
+          v-input
+          type="text"
+          class="phone"
+          v-model="giftParams.phone"
+          placeholder="请输入电话"
+        />
+        <input
+          v-input
+          type="text"
+          class="address"
+          v-model="giftParams.address"
+          placeholder="请输入收货地址"
+        />
         <div class="desc">
           请填写您的领奖信息
           <br />我们将在活动结束后尽快安排发奖
@@ -17,80 +38,93 @@
     </div>
 
     <footer>
-      <div class="btn" @click="submit">{{btnText}}</div>
+      <div
+        class="btn"
+        @click="submit"
+      >{{btnText}}</div>
     </footer>
   </div>
 </template>
 
 <script>
-
 export default {
-    name: 'rule',
-    meta: {
-        cn: '规则奖品'
+  name: "rule",
+  meta: {
+    cn: "规则奖品"
+  },
+  props: ["name", "phone", "address", "gift"],
+  data() {
+    return {
+      giftParams: {
+        name: "",
+        phone: "",
+        address: ""
+      },
+      btnText: "更新信息"
+    };
+  },
+  created() {
+    this.init();
+  },
+  mounted() {},
+  methods: {
+    init() {
+      console.log(this.gift);
+      Object.assign(this.giftParams, {
+        name: this.name,
+        phone: this.phone,
+        address: this.address
+      });
+      if (!this.name && !this.phone && !this.address) this.btnText = "提交信息";
     },
-    props:['name','phone','address','gift'],
-    data () {
-        return {
-            giftParams:{
-                name:'',
-                phone:'',
-                address:''
-            },
-            btnText: "更新信息"
+    close() {
+      this.$emit("close");
+    },
+    submit() {
+      if (this._check()) {
+        const obj = {
+          name: this.giftParams.name,
+          phone: this.giftParams.phone,
+          address: this.giftParams.address
         };
-    },
-    created () {
-        this.init();
-    },
-    mounted () {
-    },
-    methods: {
-        init(){
-            console.log(this.gift);
-            Object.assign(this.giftParams,{name:this.name,phone:this.phone,address:this.address});
-            if(!this.name && !this.phone && !this.address) this.btnText = "提交信息";
-        },
-        close(){
-            this.$emit("close");
-        },
-        submit(){
-            if(this._check()){
-                const obj = {name:this.giftParams.name,phone:this.giftParams.phone,address:this.giftParams.address};
-                console.log(JSON.stringify(this.gift));
-                if(!this.gift.giftId) this.gift.giftId = this.gift.id;
-                this.$api.sendForm({  activityId: this.$bus.signInfo.config.id,
-                    addressForm: JSON.stringify(obj),
-                    giftId: this.gift.giftId}).then(
-                    async res=>{
-                        if(res.code === '1010'){
-                            this.$toast({message:"活动结束"});
-                        }else{
-                            this.$toast({message:"填写成功"});
+        console.log(JSON.stringify(this.gift));
+        if (!this.gift.giftId) this.gift.giftId = this.gift.id;
+        this.$api
+          .sendForm({
+            activityId: this.$bus.signInfo.config.id,
+            addressForm: JSON.stringify(obj),
+            giftId: this.gift.giftId
+          })
+          .then(async res => {
+            if (res.code === "1010") {
+              this.$toast({ message: "活动结束" });
+            } else {
+              this.$toast({ message: "填写成功" });
 
-                            await this.$api.boot({activityId: this.$bus.signInfo.config.id});
-                            this.$emit('close');
-                        }
-
-                    }
-                ).catch(err=>{
-                    console.log('err',err);
-                });
+              await this.$api.boot({
+                activityId: this.$bus.signInfo.config.id
+              });
+              this.$emit("close");
             }
-        },
-        _check() {
-            let err = "";
-            if (!this.giftParams.phone) {
-                err = "请填写手机号";
-            } else if (!this.giftParams.name) {
-                err = "请填写姓名";
-            } else if (!this.giftParams.address) {
-                err = "请填写地址";
-            }
-            err && this.$toast({ message: err });
-            return !err;
-        }
+          })
+          .catch(err => {
+            console.log("err", err);
+          });
+      }
     },
+    _check() {
+      let err = "";
+      if (!this.giftParams.phone) {
+        err = "请填写手机号";
+      } else if (!this.giftParams.name) {
+        err = "请填写姓名";
+      } else if (!this.giftParams.address) {
+        err = "请填写地址";
+      }
+      err && this.$toast({ message: err });
+      return !err;
+    }
+  }
 };
 </script>
 
@@ -110,7 +144,7 @@ export default {
     font-stretch: normal;
     line-height: 1.2rem;
     letter-spacing: 0.08rem;
-    color: #4288ff;
+    color: #ffffff;
     > .back {
       .p-a();
       top: 0.1rem;
@@ -183,7 +217,7 @@ export default {
       font-stretch: normal;
       line-height: 0.44rem;
       letter-spacing: 1px;
-      color: #4d8bdc;
+      color: #9e9e9e;
       &:last-of-type {
         margin-bottom: 1rem;
       }
@@ -205,11 +239,10 @@ export default {
       font-weight: bold;
       font-stretch: normal;
       letter-spacing: 0.02rem;
-      background-color: #1c5ffa;
+      background-color: #1f305e;
       color: #ffffff;
       &.active {
-        background-color: #5fa7ff;
-        color: #090709;
+        color: #2b6bff;
       }
     }
   }

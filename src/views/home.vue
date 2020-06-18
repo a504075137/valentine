@@ -250,7 +250,7 @@ export default {
             }, 1000);
         },
         judgeTime(){
-            this.$bus.gameover = !this.$func.isAfter(this.$bus.signInfo.config.endTime);
+            this.$bus.gameover = this.$func.isAfter(this.$bus.signInfo.config.endTime);
         },
         showEnd(){
             this.$dialog.show("gift", { vBind: { type: "gameover" } });

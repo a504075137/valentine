@@ -4,15 +4,9 @@
       <template v-if="index === 0">活动规则</template>
       <template v-else-if="index === 1">我的奖品</template>
       <template v-else>领奖信息</template>
-      <div
-        class="close"
-        @click="close"
-      ></div>
+      <div class="close" @click="close"></div>
     </header>
-    <div
-      class="content"
-      v-if="index === 0"
-    >
+    <div class="content" v-if="index === 0">
       <div class="title">活动时间</div>
       <div class="cont">2020年6月4日 至 2020年6月20日</div>
       <div class="title">活动方式</div>
@@ -20,27 +14,18 @@
       <div class="title">奖品规则</div>
       <div class="cont">
         1、累计签到 3 天，奖励 无门槛 5 元优惠券
-        <br>
-        2、累计签到 5 天，奖励 199-15 元优惠券
-        <br>
-        3、累计签到 10 天，奖励 199-20 元优惠券
-        <br>
-        4、累计签到 15 天，奖励 399-30 元优惠券+蜂套 2
-        <br>
-        5、蜂套 2 限量 2000 套，领完为止 ，同一用户最多获得一份蜂套 2（同一手机号或者同一地址的都会被视为同一用户）
-        <br>
+        <br />2、累计签到 5 天，奖励 199-15 元优惠券
+        <br />3、累计签到 10 天，奖励 199-20 元优惠券
+        <br />4、累计签到 15 天，奖励 399-30 元优惠券+蜂套 2
+        <br />5、蜂套 2 限量 2000 套，领完为止 ，同一用户最多获得一份蜂套 2（同一手机号或者同一地址的都会被视为同一用户）
+        <br />
       </div>
       <div class="title">补签规则</div>
-      <div class="cont">
-        把活动页面分享到群聊或者朋友圈，可获得补签机会，活动期间最多可补签两次
-      </div>
+      <div class="cont">把活动页面分享到群聊或者朋友圈，可获得补签机会，活动期间最多可补签两次</div>
       <div class="title">主办方</div>
       <div class="cont">飞智科技</div>
     </div>
-    <div
-      class="content"
-      v-if="index === 1"
-    >
+    <div class="content" v-if="index === 1">
       <Card
         class="card"
         v-for="(item,index) in giftList"
@@ -49,32 +34,11 @@
         @getGift="getGift"
       />
     </div>
-    <div
-      class="content"
-      v-if="index === 3"
-    >
+    <div class="content" v-if="index === 3">
       <div class="bg">
-        <input
-          v-input
-          type="text"
-          class="name"
-          v-model="name"
-          placeholder="请输入姓名"
-        />
-        <input
-          v-input
-          type="text"
-          class="phone"
-          v-model="phone"
-          placeholder="请输入电话"
-        />
-        <input
-          v-input
-          type="text"
-          class="address"
-          v-model="address"
-          placeholder="请输入收货地址"
-        />
+        <input v-input type="text" class="name" v-model="name" placeholder="请输入姓名" />
+        <input v-input type="text" class="phone" v-model="phone" placeholder="请输入电话" />
+        <input v-input type="text" class="address" v-model="address" placeholder="请输入收货地址" />
         <div class="desc">
           请填写您的领奖信息
           <br />我们将在活动结束后尽快安排发奖
@@ -96,10 +60,7 @@
         >我的奖品</div>
       </template>
       <template v-else>
-        <div
-          class="btn"
-          @click="submit"
-        >提交 信息</div>
+        <div class="btn" @click="submit">提交 信息</div>
       </template>
     </footer>
   </div>
@@ -108,107 +69,107 @@
 <script>
 import Card from "@c/Card";
 export default {
-  name: "rule",
-  meta: {
-    cn: "规则奖品"
-  },
-  data() {
-    return {
-      index: 0,
-      giftList: [],
-      name: "",
-      phone: "",
-      address: "",
-      gift: null
-    };
-  },
-  created() {
-    this.init();
-  },
-  mounted() {},
-  methods: {
-    init() {
-      this.giftList = this.$bus.signInfo.userGiftList;
-      if (this.$bus.rulePage) {
-        this.gift = this.$bus.rulePage;
-        if (this.$bus.rulePage.addressForm) {
-          const { name, phone, address } = JSON.parse(
-            this.$bus.rulePage.addressForm
-          );
-          this.name = name;
-          this.phone = phone;
-          this.address = address;
-        }
-        this.index = 0;
-        this.$bus.rulePage = null;
-      }
+    name: "rule",
+    meta: {
+        cn: "规则奖品"
     },
-    close() {
-      this.$emit("close");
-    },
-    getGift(params) {
-      if (params.giftType === "entity") {
-        // this.index = 3;
-        this.gift = params;
-        if (params.addressForm) {
-          const { name, phone, address } = JSON.parse(params.addressForm);
-          this.name = name;
-          this.phone = phone;
-          this.address = address;
-          this.$bus.$emit("goGetgift", { gift: params, name, phone, address });
-        } else {
-          this.$bus.$emit("goGetgift", { gift: params });
-        }
-      } else {
-        this.$dialog.show("gift", {
-          vBind: { type: "taobao", hasGain: true, giftInfo: params }
-        });
-      }
-    },
-    submit() {
-      if (this._check()) {
-        const obj = {
-          name: this.name,
-          phone: this.phone,
-          address: this.address
+    data() {
+        return {
+            index: 0,
+            giftList: [],
+            name: "",
+            phone: "",
+            address: "",
+            gift: null
         };
-        console.log(obj, this.gift);
-        this.$api
-          .sendForm({
-            activityId: this.$bus.signInfo.config.id,
-            addressForm: JSON.stringify(obj),
-            giftId: this.gift.giftId
-          })
-          .then(async res => {
-            this.$toast({ message: "填写成功" });
-            await this.$api.boot({ activityId: this.$bus.signInfo.config.id });
-          })
-          .catch(err => {
-            console.log("err", err);
-          });
-      }
     },
-    _check() {
-      let err = "";
-      if (!this.phone) {
-        err = "请填写手机号";
-      } else if (!this.name) {
-        err = "请填写姓名";
-      } else if (!this.address) {
-        err = "请填写地址";
-      }
-      err && this.$toast({ message: err });
-      return !err;
+    created() {
+        this.init();
+    },
+    mounted() {},
+    methods: {
+        init() {
+            this.giftList = this.$bus.signInfo.userGiftList;
+            if (this.$bus.rulePage) {
+                this.gift = this.$bus.rulePage;
+                if (this.$bus.rulePage.addressForm) {
+                    const { name, phone, address } = JSON.parse(
+                        this.$bus.rulePage.addressForm
+                    );
+                    this.name = name;
+                    this.phone = phone;
+                    this.address = address;
+                }
+                this.index = 0;
+                this.$bus.rulePage = null;
+            }
+        },
+        close() {
+            this.$emit("close");
+        },
+        getGift(params) {
+            if (params.giftType === "entity") {
+                // this.index = 3;
+                this.gift = params;
+                if (params.addressForm) {
+                    const { name, phone, address } = JSON.parse(params.addressForm);
+                    this.name = name;
+                    this.phone = phone;
+                    this.address = address;
+                    this.$bus.$emit("goGetgift", { gift: params, name, phone, address });
+                } else {
+                    this.$bus.$emit("goGetgift", { gift: params });
+                }
+            } else {
+                this.$dialog.show("gift", {
+                    vBind: { type: "taobao", hasGain: true, giftInfo: params }
+                });
+            }
+        },
+        submit() {
+            if (this._check()) {
+                const obj = {
+                    name: this.name,
+                    phone: this.phone,
+                    address: this.address
+                };
+                console.log(obj, this.gift);
+                this.$api
+                    .sendForm({
+                        activityId: this.$bus.signInfo.config.id,
+                        addressForm: JSON.stringify(obj),
+                        giftId: this.gift.giftId
+                    })
+                    .then(async res => {
+                        this.$toast({ message: "填写成功" });
+                        await this.$api.boot({ activityId: this.$bus.signInfo.config.id });
+                    })
+                    .catch(err => {
+                        console.log("err", err);
+                    });
+            }
+        },
+        _check() {
+            let err = "";
+            if (!this.phone) {
+                err = "请填写手机号";
+            } else if (!this.name) {
+                err = "请填写姓名";
+            } else if (!this.address) {
+                err = "请填写地址";
+            }
+            err && this.$toast({ message: err });
+            return !err;
+        }
+    },
+    watch: {
+        "$bus.refresh"(val) {
+            this.giftList = this.$bus.signInfo.userGiftList;
+        }
+    },
+    components: {
+        Card
     }
-  },
-  watch: {
-    "$bus.refresh"(val) {
-      this.giftList = this.$bus.signInfo.userGiftList;
-    }
-  },
-  components: {
-    Card
-  }
 };
 </script>
 

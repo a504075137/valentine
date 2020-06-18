@@ -22,11 +22,7 @@
         v-else-if="giftInfo.giftName.includes('30')"
         :style="{backgroundImage:`url(${require(`@imgs/30.png`)})`}"
       ></div>
-      <div
-        class="pic"
-        v-else
-        :style="{backgroundImage:`url(${giftInfo.giftImg})`}"
-      ></div>
+      <div class="pic" v-else :style="{backgroundImage:`url(${giftInfo.giftImg})`}"></div>
       <div class="content">
         <div class="name">{{giftInfo.giftName}}</div>
         <div class="desc">{{giftInfo.giftDescription}}</div>
@@ -34,27 +30,24 @@
     </div>
     <div class="footer">
       <div class="time">{{giftInfo.createAt}}</div>
-      <div
-        class="btn"
-        @click="getGift"
-      >领取奖品</div>
+      <div class="btn" @click="getGift">领取奖品</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["giftInfo"],
-  data() {
-    return {};
-  },
-  methods: {
-    getGift() {
-      // this.$dialog.show("getGift");
-      this.$emit("getGift", this.giftInfo);
-    }
-  },
-  created() {}
+    props: ["giftInfo"],
+    data() {
+        return {};
+    },
+    methods: {
+        getGift() {
+            // this.$dialog.show("getGift");
+            this.$emit("getGift", this.giftInfo);
+        }
+    },
+    created() {}
 };
 </script>
 

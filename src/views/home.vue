@@ -22,8 +22,9 @@
     <!-- <div class="test">{{query}}</div> -->
     <Calendar class="calendar" :giftDays="giftDays" />
     <div class="btn" @click="mark" v-if="!$bus.hasToday && !$bus.gameover"></div>
+    <div class="btn gameover" @click="mark" v-else-if="$bus.gameover"></div>
     <div class="btn hasToday" v-else>
-      <span>{{$bus.gameover ? '活动已结束':"今日已签到"}}</span>
+      <!-- <span>{{$bus.gameover ? '活动已结束':"今日已签到"}}</span> -->
     </div>
     <div class="gift" @click="showRule=true"></div>
   </div>
@@ -302,6 +303,9 @@ export default {
     .wh(3.07rem, 0.74rem);
     margin-bottom: 0.43rem;
     .bg-contain("mark_btn.png");
+    &.gameover {
+      .bg-contain("gameoverbtn.png");
+    }
     &.hasToday {
       .bg-contain("hasMark.png");
     }

@@ -1,6 +1,6 @@
-import '@utils/window';
 import '@c/toast';
 import '@utils/storage';
+import '@utils/window';
 import '@utils/bus';
 import '@utils/filters';
 import '@utils/api';
@@ -13,8 +13,11 @@ import App from './App.vue';
 import router from './router';
 import Vconsole from 'vconsole';
 
-let vConsole = new Vconsole();
-Vue.use(vConsole);
+if(window.location.href.indexOf("debug")>-1){
+	let vConsole = new Vconsole();
+	Vue.use(vConsole);	
+}
+
 
 Vue.publicPath = Vue.prototype.publicPath = process.env.BASE_URL;
 

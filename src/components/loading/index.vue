@@ -21,6 +21,7 @@ export default {
         };
     },
     created() {
+        console.log("Version 1.1");
         Vue.$loading = Vue.prototype.$loading = {
             show: (text = '加载中...')=> {
                 this.show(text);
@@ -45,7 +46,7 @@ export default {
 <style lang="less">
 .project-loading {
     .page(transparent);
-    z-index: 9999999999;
+    z-index: 999;
     > .loading-box {
         .center();
         .wh(100px);

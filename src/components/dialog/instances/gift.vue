@@ -10,7 +10,9 @@
       <template v-if="type === 'taobao'">
         <Taobao :giftInfo="giftInfo" @close="$emit('close')" :hasGain="hasGain" @recieve="recieve" />
       </template>
-
+      <div class="content" v-else-if="type === 'gameover'">
+        <img src="@imgs/gameover.png" alt class="gameover" />
+      </div>
       <div class="content" v-else-if="type === 'get-gift'">
         <div class="icon" :style="{backgroundImage:`url(${require(`@imgs/icon_${type}.png`)})`}"></div>
         <div :class="['text' , {'hasGain':!hasGain || cantGain}]" v-if="giftInfo.length >= 1">
@@ -103,69 +105,70 @@ import BaseDialog from "../BaseDialog.vue";
 import ClipboardJS from "clipboard";
 import Ticket from "@c/Ticket";
 import Taobao from "@c/Taobao";
-import Swiper from 'swiper';
+import Swiper from "swiper";
 import "swiper/css/swiper.min.css";
 let clipFlag = false;
 let mySwiper;
 export default {
-    name: 'gift',
+    name: "gift",
     meta: {
-        cn: '签到获奖弹窗'
+        cn: "签到获奖弹窗"
     },
     components: {
         BaseDialog,
         // Ticket,
         Taobao
     },
-    props:['type','giftInfo','hasGain','cantGain','date'],
-    data(){
+    props: ["type", "giftInfo", "hasGain", "cantGain", "date"],
+    data() {
         return {
-            textList:{
-                'sign-success':{
-                    p1:'签到成功！',
-                    p2:'马上登录保存成绩吧~'
+            textList: {
+                "sign-success": {
+                    p1: "签到成功！",
+                    p2: "马上登录保存成绩吧~"
                 },
-                remark:{
-                    p1:'哦哟~您忘记签到啦！',
-                    p2:''
+                remark: {
+                    p1: "哦哟~您忘记签到啦！",
+                    p2: ""
                 },
-                'get-gift':{
-                    p1:'',
-                    p2:''
+                "get-gift": {
+                    p1: "",
+                    p2: ""
                 },
-                'taobao':{
-                    p1:'复制下面淘口令',
-                    p2:'xxxxx'
+                taobao: {
+                    p1: "复制下面淘口令",
+                    p2: "xxxxx"
                 }
             },
-            btnText:{
-                'sign-success':'立即登录',
-                remark:'我要补签',
-                'get-gift':'马上领奖',
-                taobao:'复制淘口令'
+            btnText: {
+                "sign-success": "立即登录",
+                remark: "我要补签",
+                "get-gift": "马上领奖",
+                taobao: "复制淘口令"
             },
-            giftIndex:0
+            giftIndex: 0
         };
     },
-    methods:{
-        async recieve(){
-            if(this.type === 'remark'){
-                this.$storage.save('loginStatus',this.date);
-                // console.log(11111,this.date,this.$storage.load('loginStatus'));
-                if(!this.$bus.isWeixinBrowser){
+    methods: {
+        async recieve() {
+            if (this.type === "remark") {
+                if(this.$bus.gameover){
+                    this.$dialog.show("gift", { vBind: { type: "gameover" } });
+                    return;
+                }
+                this.$storage.save("loginStatus", this.date);
+                if (!this.$bus.isWeixinBrowser) {
                     // console.log(11,this.date);
                     this.$dialog.show("Share");
-                    this.$storage.save("share",this.date);
-                }else{
+                    this.$storage.save("share", this.date);
+                } else {
                     this.$dialog.show("Share");
-                    this.$bus.$off("wx-share",this.reMark);
-                    this.$bus.$on("wx-share",this.reMark);
+                    this.$bus.$off("wx-share", this.reMark);
+                    this.$bus.$on("wx-share", this.reMark);
                 }
-
-            }else if(this.type === 'get-gift'){
+            } else if (this.type === "get-gift") {
                 this.recieveGetGift();
-
-            }else if(this.type === 'taobao' || this.type === 'display'){
+            } else if (this.type === "taobao" || this.type === "display") {
                 // APP 微信 都是复制操作
                 // if(this.$bus.isWeixinBrowser){
                 //     console.log("复制");
@@ -177,14 +180,13 @@ export default {
                 //     console.log(link,this.giftIndex,this.giftInfo.length-1);
                 //     window.location.replace(link);
                 // }
-
-            }else if(this.type === 'sign-success'){
-                this.$emit('close');
+            } else if (this.type === "sign-success") {
+                this.$emit("close");
                 // this.$router.replace("login");
                 this.$bus.$emit("goLogin");
             }
         },
-        recieveGetGift(){
+        recieveGetGift() {
             // if(this.hasGain){
             //     console.log("领过了");
             // }else{
@@ -192,115 +194,121 @@ export default {
             //     this.$emit('close');
             //     this.$router.replace('rule');
             // }
-            this.$emit('close');
-            this.$router.replace('rule');
+            this.$emit("close");
+            this.$router.replace("rule");
         },
-        switchGift(direction){
-            if(direction === 'next'){
-                this.giftIndex = this.giftIndex === this.giftInfo.length-1? this.giftInfo.length-1 : this.giftIndex+1;
-            }else{
-                this.giftIndex = this.giftIndex === 0? 0 : this.giftIndex-1;
+        switchGift(direction) {
+            if (direction === "next") {
+                this.giftIndex =
+          this.giftIndex === this.giftInfo.length - 1
+              ? this.giftInfo.length - 1
+              : this.giftIndex + 1;
+            } else {
+                this.giftIndex = this.giftIndex === 0 ? 0 : this.giftIndex - 1;
             }
-
         },
-        beforeShow(){
+        beforeShow() {
             this.giftIndex = 0;
             this.initBanner();
 
             // if((this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
-            if((this.type !== 'taobao' && this.type!=='display')) return;
+            if (this.type !== "taobao" && this.type !== "display") return;
             const clipboard = new ClipboardJS(".taobaobtn");
             const _this = this;
             clipboard.on("success", this.copy);
             clipFlag = true;
         },
-        copy(e){
+        copy(e) {
             // if( (this.type !== 'taobao' && this.type!=='display') || !this.$bus.isWeixinBrowser) return;
-            if( (this.type !== 'taobao' && this.type!=='display')) return;
+            if (this.type !== "taobao" && this.type !== "display") return;
             this.$toast({ message: "淘口令复制成功" });
             e.clearSelection();
         },
-        async reMark(){
-            if(!this.$bus.isLogin){
-                this.$emit('close');
-                setTimeout(()=>{
-                    this.$dialog.show("gift",{vBind:{type:'sign-success'}});
-                },600);
+        async reMark() {
+            if (!this.$bus.isLogin) {
+                this.$emit("close");
+                setTimeout(() => {
+                    this.$dialog.show("gift", { vBind: { type: "sign-success" } });
+                }, 600);
 
                 return;
             }
             this.$loading.show();
-            const result = await this.$api.remark({activityId:this.$bus.signInfo.config.id,date: this.date});
-            if(result.code === '1013'){
-                this.$toast({message:"超出补签次数"});
+            const result = await this.$api.remark({
+                activityId: this.$bus.signInfo.config.id,
+                date: this.date
+            });
+            if (result.code === "1013") {
+                this.$toast({ message: "超出补签次数" });
                 this.$loading.hide();
-                this.$emit('close');
+                this.$emit("close");
                 return;
             }
-            if(result.code === '1011'){
-                this.$toast('签到过了');
+            if (result.code === "1011") {
+                this.$toast("签到过了");
                 this.$loading.hide();
-                this.$emit('close');
+                this.$emit("close");
                 return;
             }
-            if(result.code === '1012'){
-                this.$toast('补签日期不在活动期间');
+            if (result.code === "1012") {
+                this.$toast("补签日期不在活动期间");
                 this.$loading.hide();
                 return;
             }
-            if(result.sendGiftList.length>0){
+            if (result.sendGiftList.length > 0) {
                 // const type = result.sendGiftList[0].giftType === 'taobao' ? 'taobao' : 'get-gift';
-                await this.$api.boot({activityId:this.$bus.activityId});
-                setTimeout(()=>{
-                    this.$dialog.show("gift",{vBind:{type:'display',hasGain:true,cantGain:false,giftInfo:result.sendGiftList}});
-                },1000);
+                await this.$api.boot({ activityId: this.$bus.activityId });
+                setTimeout(() => {
+                    this.$dialog.show("gift", {
+                        vBind: {
+                            type: "display",
+                            hasGain: true,
+                            cantGain: false,
+                            giftInfo: result.sendGiftList
+                        }
+                    });
+                }, 1000);
                 this.$loading.hide();
-                this.$emit('close');
+                this.$emit("close");
                 return;
             }
-            await this.$api.boot({activityId:this.$bus.activityId});
+            await this.$api.boot({ activityId: this.$bus.activityId });
             this.$loading.hide();
-            this.$emit('close');
-            this.$bus.$off("wx-share",this.reMark);
+            this.$emit("close");
+            this.$bus.$off("wx-share", this.reMark);
             // this.$toast({message:"补签成功"});
-            setTimeout(()=>{
-                this.$dialog.show("gift",{vBind:{type:'sign-success'}});
-            },1000);
+            setTimeout(() => {
+                this.$dialog.show("gift", { vBind: { type: "sign-success" } });
+            }, 1000);
         },
-        initBanner(){
-            this.$nextTick(()=>{
+        initBanner() {
+            this.$nextTick(() => {
                 // if(mySwiper) {
                 //     mySwiper.updateSlides();
                 //     return;
                 // }
-                mySwiper = new Swiper ('.swiper-container.taobaobanner', {
+                mySwiper = new Swiper(".swiper-container.taobaobanner", {
                     loop: false, // 循环模式选项
                     init: true,
-                    allowTouchMove: false,
+                    // allowTouchMove: false,
                     initialSlide: 0,
                     navigation: {
-                        nextEl: '.swiper-button-next',
+                        nextEl: ".swiper-button-next",
                         // prevEl: '.swiper-button-prev',
-                        prevEl: '.swiper-button-prev',
-                    },
-
+                        prevEl: ".swiper-button-prev"
+                    }
                 });
             });
-
         },
-        beforeClose(){
-            if(mySwiper && this.giftInfo && this.giftInfo.length>0){
-                setTimeout(()=>{
+        beforeClose() {
+            if (mySwiper && this.giftInfo && this.giftInfo.length > 0) {
+                setTimeout(() => {
                     mySwiper.slideTo(0, 1, false);
-                },1000);
+                }, 1000);
             }
-
-
         }
     },
-    mounted(){
-
-    }
+    mounted() {}
 };
 </script>
 
@@ -402,6 +410,9 @@ export default {
         &:not(.swiper-button-disabled) {
           animation: shakeLeft 0.6s linear infinite alternate;
         }
+      }
+      > .gameover {
+        width: 60%;
       }
       > .taobaobtn,
       > .btn {

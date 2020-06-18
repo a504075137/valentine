@@ -38,74 +38,69 @@
 let seconds = 1000 * 60;
 let registFlag = false;
 export default {
-    name: 'login',
+    name: "login",
     meta: {
-        cn: '登录注册'
+        cn: "登录注册"
     },
-    data () {
+    data() {
         return {
-            index:0,
-            phone:null,
-            password:null,
-            register:{
-                phone:null,
-                code:null,
-                password:null,
-                repasswd:null,
-                name:null
+            index: 0,
+            phone: null,
+            password: null,
+            register: {
+                phone: null,
+                code: null,
+                password: null,
+                repasswd: null,
+                name: null
             },
             secondNum: "",
             sending: false,
-            timer: null,
+            timer: null
         };
     },
-    created () {
-
-    },
-    mounted () {
-
-    },
+    created() {},
+    mounted() {},
     methods: {
-        async login(){
-            if(this._check()){
+        async login() {
+            if (this._check()) {
                 const obj = {
-                    email:this.phone,password:this.password
+                    email: this.phone,
+                    password: this.password
                 };
                 try {
                     this.$loading.show();
                     const result = await this.$api.login(obj);
                     this.$bus.isLogin = true;
-                    if(this.$bus.loginStatus === 'mark'){
+                    if (this.$bus.loginStatus === "mark") {
                         await this.$parent.mark();
+                        await this.$api.boot({ activityId: this.$bus.activityId });
                         this.$emit("close");
                         return;
-                    }else if(this.$storage.load('loginStatus')){
-                        await this.$parent.reMark(this.$storage.load('loginStatus'));
-                        this.$storage.save('loginStatus','');
-                        await this.$api.boot({activityId:this.$bus.activityId});
+                    } else if (this.$storage.load("loginStatus")) {
+                        await this.$parent.reMark(this.$storage.load("loginStatus"));
+                        this.$storage.save("loginStatus", "");
+                        await this.$api.boot({ activityId: this.$bus.activityId });
                         this.$emit("close");
                         return;
                     }
-                    await this.$api.boot({activityId:this.$bus.activityId});
-                    this.$toast('登录成功');
+                    await this.$api.boot({ activityId: this.$bus.activityId });
+                    this.$toast("登录成功");
                     this.$loading.hide();
                     // this.$router.replace("home");
                     this.$emit("close");
-
                 } catch (error) {
                     console.log(error);
                     this.$loading.hide();
-                    if(error.err == 1){
-                        this.$toast({message:"用户不存在"});
-                    }else if(error.err == 2){
-                        this.$toast({message:"密码错误"});
-                    }else if(error.err == 3){
-                        this.$toast({message:"安全问题错误"});
+                    if (error.err == 1) {
+                        this.$toast({ message: "用户不存在" });
+                    } else if (error.err == 2) {
+                        this.$toast({ message: "密码错误" });
+                    } else if (error.err == 3) {
+                        this.$toast({ message: "安全问题错误" });
                     }
                 }
             }
-
-
         },
         _check() {
             let err = "";
@@ -117,7 +112,7 @@ export default {
             err && this.$toast({ message: err });
             return !err;
         },
-        goRegister(){
+        goRegister() {
             this.index = 1;
         },
         async sendSms() {
@@ -133,17 +128,17 @@ export default {
                 this.$loading.show();
                 let result = await this.$api.sendCode({ mobile: this.register.phone });
                 this.$loading.hide();
-                result.err == 0  && this.$toast("发送验证码成功");
+                result.err == 0 && this.$toast("发送验证码成功");
 
-                if(result.err == 20001 ){
+                if (result.err == 20001) {
                     this.$toast("手机号码不合法");
-                }else if(result.err == 20002 ){
+                } else if (result.err == 20002) {
                     this.$toast("号码已被注册");
-                }else if(result.err == 20003){
+                } else if (result.err == 20003) {
                     this.$toast("短信发送失败");
-                }else if(result.err == 20008){
+                } else if (result.err == 20008) {
                     this.$toast("图形验证码错误");
-                }else{
+                } else {
                     this.sending = true;
                     this.secondNum = seconds / 1000 + "s";
                     this.timer = setInterval(() => {
@@ -157,64 +152,63 @@ export default {
                         this.secondNum = seconds / 1000 + "s";
                     }, 1000);
                 }
-
             } catch (error) {
                 this.$loading.hide();
                 console.log(error);
                 this.$toast("服务器开小差了，稍后再试试吧");
             }
         },
-        async sendRegister(){
-
-            if(this._checkRegist()){
-                if(registFlag){
+        async sendRegister() {
+            if (this._checkRegist()) {
+                if (registFlag) {
                     return;
                 }
                 registFlag = true;
-                const result = await this.$api.register({  code: this.register.code,
+                const result = await this.$api.register({
+                    code: this.register.code,
                     mobile: this.register.phone,
                     password: this.register.password
                     // , username: this.register.name
                 });
-                switch(result.err){
+                switch (result.err) {
                 case 0:
                     this.$api.injectJwt(result.jwt);
-                    this.$storage.save('jwt', result.jwt);
+                    this.$storage.save("jwt", result.jwt);
+                    this.$storage.save("login-handle", 1); // 代表APP内 手动登录过 这种情况 如果APP没有带参数 不应该重置登录态
                     this.$bus.isLogin = true;
-                    if(this.$bus.loginStatus === 'mark'){
+                    if (this.$bus.loginStatus === "mark") {
                         await this.$parent.mark();
                         this.$emit("close");
                         return;
-                    }else if(this.$storage.load('loginStatus')){
-                        await this.$parent.reMark(this.$storage.load('loginStatus'));
-                        this.$storage.save('loginStatus','');
-                        await this.$api.boot({activityId:this.$bus.activityId});
+                    } else if (this.$storage.load("loginStatus")) {
+                        await this.$parent.reMark(this.$storage.load("loginStatus"));
+                        this.$storage.save("loginStatus", "");
+                        await this.$api.boot({ activityId: this.$bus.activityId });
                         this.$emit("close");
                         return;
                     }
-                    await this.$api.boot({activityId:this.$bus.activityId});
-                    this.$toast('注册成功');
+                    await this.$api.boot({ activityId: this.$bus.activityId });
+                    this.$toast("注册成功");
                     // this.$router.replace("home");
                     this.$emit("close");
                     break;
                 case 20001:
-                    this.$toast('手机号码不合法');
+                    this.$toast("手机号码不合法");
                     break;
                 case 20002:
-                    this.$toast('号码已被注册');
+                    this.$toast("号码已被注册");
                     break;
                 case 20004:
-                    this.$toast('验证码错误');
+                    this.$toast("验证码错误");
                     break;
                 case 20005:
-                    this.$toast('用户名被占用');
+                    this.$toast("用户名被占用");
                     break;
                 case 20006:
-                    this.$toast('注册失败');
+                    this.$toast("注册失败");
                     break;
                 }
                 registFlag = false;
-
             }
         },
         _checkRegist() {
@@ -238,7 +232,7 @@ export default {
             // }
             err && this.$toast({ message: err });
             return !err;
-        },
+        }
     }
 };
 </script>
@@ -257,7 +251,7 @@ export default {
     font-stretch: normal;
     line-height: 1.18rem;
     letter-spacing: 0.08rem;
-    color: #4288ff;
+    color: #ffffff;
     > .back {
       .p-a();
       top: 0.4rem;

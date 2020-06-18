@@ -8,7 +8,9 @@ import {
     auth
 } from './axios';
 import config from './config';
-const source = window.$query.source;
+
+let source = window.$query.source;
+
 
 class Api {
     async getServerTime() {
@@ -20,12 +22,15 @@ class Api {
     }
     async login(params) {
         return new Promise(async (resolve, reject) => {
+            console.log('即将开始登陆');
             let res = await post('/login/feizhi/login', { country_code: "86", isuid: "2", source, ...params });
+            console.log('登陆结束')
             console.log(res);
             try {
                 if (res.jwt) {
                     this.injectJwt(res.jwt);
                     Vue.$storage.save('jwt', res.jwt);
+                    Vue.$storage.save('login-handle', 1); // 代表APP内 手动登录过 这种情况 如果APP没有带参数 不应该重置登录态
                     resolve(res);
                 } else {
                     // Vue.$toast('登录失败', 'error');

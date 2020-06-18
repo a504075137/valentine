@@ -32,14 +32,15 @@ const bus = new Vue({
                 config: {}
             },
             refresh: true,
-            activityId: 1,
+            activityId: 101,
             isLogin: false,
             ruleIndex: 0,
             hasToday: false, // 今天有没有签到
             rulePage: null,
             signDay: 0,
             continueDay: 0,
-            loginStatus: ''
+            loginStatus: '',
+            gameover: false // 活动是否结束
         };
     },
     created() {

@@ -91,8 +91,8 @@ export default {
             this.month=curdate.getMonth() +1;
             this.day=curdate.getDate();
             this.curDate = `${this.year}-${this.month}-${this.day}`;
-            startTime =dayjs(this.$bus.signInfo.config.startTime.split(" ")[0]);
-            endTime =dayjs(this.$bus.signInfo.config.endTime);
+            startTime = dayjs(this.$bus.signInfo.config.startTime.split(" ")[0]);
+            endTime = dayjs(this.$bus.signInfo.config.endTime);
         },
         handleChoose(day){
             const chooseDay = `${this.year}-${this.month >=10?this.month:'0'+this.month}-${day >=10?day:'0'+day}`;
@@ -119,6 +119,10 @@ export default {
                 }
             }else{ // 补签
                 // console.log("点击了补签按钮");
+                if(this.$bus.gameover){
+                    this.$dialog.show("gift", { vBind: { type: "gameover" } });
+                    return;
+                }
                 if(!this.$wxsdk.isWx() && !window.$query.source){
                     // 说明是非微信 非最新版本飞智APP环境 需要弹窗提示去更新
                     this.$dialog.show("gift",{vBind:{type:'update'}});
@@ -188,6 +192,9 @@ export default {
                 item.date = item.createAt.split(" ")[0];
                 return item;
             });
+        },
+        judgeTime(){
+            return this.$func.isBefore(this.$bus.signInfo.config.endTime);
         }
 
     },
@@ -298,7 +305,7 @@ export default {
   .wh(6.98rem, 6.54rem);
   .flex-column();
   .bg-contain("calendar_bg.png");
-    background-position-y: 0;
+  background-position-y: 0;
   font-size: 0.35rem;
 
   > .date-header {
@@ -373,7 +380,7 @@ export default {
           font-weight: bold;
           line-height: 0.6rem;
           text-align: center;
-            margin: 0.03rem auto;
+          margin: 0.03rem auto;
 
           > .other-day {
             color: #ccc;
@@ -478,12 +485,12 @@ export default {
             //     opacity: 1;
             //   }
             // }
-              .shake{
-                  top: 50% !important;
-                  left: 50% !important;
-                  /*transform: translate3d(-50%, -50%, 0) !important;*/
-                  .wh(0.43rem, 0.39rem) !important;
-              }
+            .shake {
+              top: 50% !important;
+              left: 50% !important;
+              /*transform: translate3d(-50%, -50%, 0) !important;*/
+              .wh(0.43rem, 0.39rem) !important;
+            }
 
             > .date-num {
               > span {
@@ -509,7 +516,7 @@ export default {
                 > .gift-icon {
                   .bg-contain("gift_icon.png");
                   &.shake {
-                    animation: small-to-big1 1s infinite linear alternate;
+                    animation: small-to-big 1s infinite linear alternate;
                   }
                 }
               }
@@ -529,10 +536,9 @@ export default {
       letter-spacing: 0.01rem;
       color: #575757;
       background-color: #ffffff;
-        border-top: 1px solid #f7f9ff;
+      border-top: 1px solid #f7f9ff;
 
-
-        > span {
+      > span {
         .wh(0.02rem, 0.21rem);
         display: block;
       }

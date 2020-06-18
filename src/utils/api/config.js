@@ -3,10 +3,12 @@ import {
     jwt
 } from '../jwt';
 
-let pro = '//custom.k8s.acgxpro.com';
+// let pro = 'https://cloud.dtyunxi.com/saas-gateway/api/fz-marketing';
+let pro = "//cloud.dtyunxi.com/saas-gateway/api/fz-marketing";
+// let dev = '//cloud.dtyunxi.com/saas-gateway/api/fz-marketing';
 let dev = '//120.77.96.19:3010';
 
-pro = dev;
+// pro = dev;
 // dev = pro;
 const host = process.env.NODE_ENV === 'production' ? pro : dev;
 

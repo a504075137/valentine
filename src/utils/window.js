@@ -1,10 +1,13 @@
 import { getAllUrlQuery } from '@utils/func.js';
+import {
+    isWeixinBrowser
+} from './func';
 
 window.$query = getAllUrlQuery();
 console.log('$query', window.$query);
-// setTimeout(()=>{
-//     alert(window.location.href);
-// },5000)
+if(isWeixinBrowser()) {
+    window.$query.source = "wechat";
+};
 
 window.$url = window.location.href;
 if (window.$query.debug == 'true') {

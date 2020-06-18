@@ -3,9 +3,9 @@ import Vue from 'vue';
 class Storage {
     constructor(prefix = '') {
         this.prefix = prefix;
-        if (window.$query.clear == 'true') {
-            window.localStorage.clear();
-        }
+        // if (window.$query.clear == 'true') {
+        //     window.localStorage.clear();
+        // }
     }
 
     generateKey(key) {

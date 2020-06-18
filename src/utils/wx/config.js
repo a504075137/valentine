@@ -16,9 +16,9 @@ if (link.indexOf('//') === 0) {
 }
 link = "http://static.via.cool/web/feizhi-mark/static/img/share_icon.32821344.png";
 const defaultShareInfo = {
-    title: '飞智618新品上新',
+    title: '飞智618签到活动',
     desc: '签到打卡赢全新蜂套2，还有更多好礼等你来拿',
-    link: window.location.href.split('#')[0].split('?')[0],
+    link: "http://static.via.cool/web/feizhi-mark/index.html#/home?activityId=101",
     imgUrl: link,
     type: 'link',
     dataUrl: ''

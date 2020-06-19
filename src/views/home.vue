@@ -251,6 +251,7 @@ export default {
         },
         judgeTime(){
             this.$bus.gameover = this.$func.isAfter(this.$bus.signInfo.config.endTime);
+            if(this.$bus.gameover) this.showEnd();
         },
         showEnd(){
             this.$dialog.show("gift", { vBind: { type: "gameover" } });

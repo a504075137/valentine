@@ -36,9 +36,30 @@
     </div>
     <div class="content" v-if="index === 3">
       <div class="bg">
-        <input v-input type="text" class="name" v-model="name" placeholder="请输入姓名" />
-        <input v-input type="text" class="phone" v-model="phone" placeholder="请输入电话" />
-        <input v-input type="text" class="address" v-model="address" placeholder="请输入收货地址" />
+        <input
+          v-input
+          type="text"
+          class="name"
+          :disabled="$bus.gameover"
+          v-model="name"
+          placeholder="请输入姓名"
+        />
+        <input
+          v-input
+          type="text"
+          class="phone"
+          :disabled="$bus.gameover"
+          v-model="phone"
+          placeholder="请输入电话"
+        />
+        <input
+          v-input
+          type="text"
+          class="address"
+          :disabled="$bus.gameover"
+          v-model="address"
+          placeholder="请输入收货地址"
+        />
         <div class="desc">
           请填写您的领奖信息
           <br />我们将在活动结束后尽快安排发奖
@@ -127,6 +148,10 @@ export default {
             }
         },
         submit() {
+            if(this.$bus.gameover){
+                this.$dialog.show("gift", { vBind: { type: "gameover" } });
+                return;
+            }
             if (this._check()) {
                 const obj = {
                     name: this.name,

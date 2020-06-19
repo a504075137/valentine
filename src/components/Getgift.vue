@@ -6,12 +6,27 @@
     </header>
     <div class="content">
       <div class="bg">
-        <input v-input type="text" class="name" v-model="giftParams.name" placeholder="请输入姓名" />
-        <input v-input type="text" class="phone" v-model="giftParams.phone" placeholder="请输入电话" />
+        <input
+          v-input
+          type="text"
+          class="name"
+          v-model="giftParams.name"
+          :disabled="$bus.gameover"
+          placeholder="请输入姓名"
+        />
+        <input
+          v-input
+          type="text"
+          class="phone"
+          :disabled="$bus.gameover"
+          v-model="giftParams.phone"
+          placeholder="请输入电话"
+        />
         <input
           v-input
           type="text"
           class="address"
+          :disabled="$bus.gameover"
           v-model="giftParams.address"
           placeholder="请输入收货地址"
         />

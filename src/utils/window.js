@@ -5,9 +5,9 @@ import {
 
 window.$query = getAllUrlQuery();
 console.log('$query', window.$query);
-if(isWeixinBrowser()) {
+if (isWeixinBrowser()) {
     window.$query.source = "wechat";
-};
+}
 
 window.$url = window.location.href;
 if (window.$query.debug == 'true') {

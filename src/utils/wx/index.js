@@ -20,9 +20,9 @@ class WxSdk {
         Object.assign(this.__proto__, wx);
     }
 
-    isWx(){
+    isWx() {
         // return false;
-        if(!isPro || isWeixinBrowser()){
+        if (!isPro || isWeixinBrowser()) {
             return true;
         }
         return false;

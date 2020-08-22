@@ -6,7 +6,7 @@ const routers = [];
 const dict = {};
 
 // 生成字典树
-const pushToDict = (root, kList, data)=> {
+const pushToDict = (root, kList, data) => {
     const key = kList.shift();
     if (!root.hasOwnProperty(key)) {
         root[key] = {
@@ -21,13 +21,13 @@ const pushToDict = (root, kList, data)=> {
 };
 
 requireAll(require.context('./views', true, /.+\.vue$/))
-    .forEach(item=> {
+    .forEach(item => {
         let pathName = item.path.split('.')[1].split('/');
         pushToDict(dict, pathName.slice(1), item.data.default);
     });
 
 // 字典树转路由
-const getRouter = (root, list, name, path)=> {
+const getRouter = (root, list, name, path) => {
     let pName = root.routeName;
     if (pName.indexOf('_') === 0) {
         pName = ':' + pName.slice(1);
@@ -49,7 +49,7 @@ const getRouter = (root, list, name, path)=> {
         useDir = false;
         if (routeName === 'index') {
             name += (name === '' ? '' : '-') + routeName;
-        } else if(routeName.indexOf('_') === 0) {
+        } else if (routeName.indexOf('_') === 0) {
             name += (name === '' ? '' : '-') + routeName.slice(1);
             path += ((path === '' || path === '/') ? ':' : '/:') + routeName.slice(1);
         } else {
@@ -69,7 +69,7 @@ const getRouter = (root, list, name, path)=> {
         };
         list.push(route);
     }
-    for(let key in root) {
+    for (let key in root) {
         getRouter(root[key], useDir ? list : route.children, useDir ? pName : name, useDir ? `/${pName}` : '');
         if (route.children && route.children.length > 0) {
             delete route.name;
@@ -92,17 +92,14 @@ console.log(routers);
 
 Vue.use(Router);
 
-const router = new Router({routes: [...routers]});
+const router = new Router({ routes: [...routers] });
 
 router.beforeEach((to, from, next) => {
     let config = {};
-    if (window.baidu) {
-        from.name && window.baidu('page', `leave_${from.name}`, `离开${from.meta.cn}`);
-        to.name && window.baidu('page', `enter_${to.name}`, `进入${to.meta.cn}`);
-    }
-    if (!Vue.$bus.ready && to.path !== '/' && !to.meta.noload) {
+
+    if (!Vue.$bus.ready && to.path !== '/home' && !to.meta.noload) {
         config = {
-            path: '/',
+            path: '/home',
             replace: true
         };
     }
